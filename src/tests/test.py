@@ -65,9 +65,6 @@ def test_SSH_is_existremote_exc():
 def test_create_db():
     if not os.path.isfile('./' + _database):
         create_db()
-    if os.path.isfile('./' + _database):
-        with pytest.raises(Exception):
-            create_db()
 
 def test_get_db_obj():
     get_db_obj()
