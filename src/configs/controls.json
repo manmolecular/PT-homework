@@ -1,0 +1,6 @@
+[
+  ["000", "File named 'testfile' is present in the root folder on target system."],
+  ["001", "Some other control-1"],
+  ["010", "Some other control-2"],
+  ["100", "Some other control-3"]
+]
