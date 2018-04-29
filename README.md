@@ -29,6 +29,7 @@ PT-exercises/src
 - `src/get_config.py` - *Parsing of json configuration file*
 - `src/main.py` - *Main module*
 - `src/transports.py` - *SSH transport class*
+- `src/requirements.txt` - *virtualenv python requirements*
 ### Dirs  
 - `src/configs/` - *Json configs files*
 - `src/scripts/` - *Directory for importing libs*
