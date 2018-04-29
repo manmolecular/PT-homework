@@ -40,6 +40,8 @@ PT-exercises/src
 - `requirements.txt` - *virtualenv python requirements*
 - `server-up.sh` - *up docker ssh server*
 # Notes  
+## Requirements  
+Basically you need just latest python3 (*for example 3.6.5 or whatever you want*) and `paramiko` module, which can be installed with pip
 ## Build containers  
 For python:  
 ```
@@ -55,6 +57,7 @@ Run:
 docker run -d -p 22022:22 --name cont-ubuntu-sshd img-ubuntu-sshd 
 # password: pwd (change it if you want)
 ```
+Or you can use `server-up.sh` script, which is more faster way
 Connect:
 ```
 ssh root@localhost -p 22022
@@ -64,7 +67,8 @@ ssh root@localhost -p 22022
 ```
 sudo pip3 install paramiko
 ```
-## Pytest  
+## Pytest
+From `src/tests/`
 ```
-pytest main-project/unit_test.py
+pytest test.py
 ```
