@@ -22,9 +22,10 @@ class TransportError(Exception):
         Exception.__init__(self, 'TransportError {}'.format(error_args))
         self.error_args = error_args
 
-class TransportUnknown(TransportError):
+class TransportUnknown(Exception):
     def __init__(self, error_args):
         TransportError.__init__(self, error_args)
+        self.error_args = error_args
 
 class TransportConnectionError(TransportError):
     def __init__(self, error_args):
