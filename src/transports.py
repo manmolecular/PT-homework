@@ -12,9 +12,6 @@ _get_file_defaults = {
         'remote_path': './',
         'local_path': './'
     }
-_transport_names = {
-        'SSH':'SSHtransport'
-    }
 
 # Classes for error handling
 class TransportError(Exception):
@@ -94,6 +91,11 @@ class SSHtransport():
             raise TransportIOError('file doesnt exist')
         sftp.close()
 
+# Set default area of transport names
+global_transport_names = {
+        'SSH':SSHtransport
+    }
+
 # Get defaults from config file
 def get_defaults(transport_name):
     _json_config = get_config()
@@ -106,7 +108,7 @@ def get_defaults(transport_name):
 
 # Get unique transport of some class
 def get_transport(transport_name, host = '', port = '', login = '', password = ''):
-    if transport_name not in _transport_names:
+    if transport_name not in global_transport_names:
         raise TransportUnknown({'transport_name':transport_name})
     
     default = get_defaults(transport_name)
@@ -119,4 +121,4 @@ def get_transport(transport_name, host = '', port = '', login = '', password = '
     if not password:
         password = default['password']
 
-    return globals()[_transport_names[transport_name]](host, port, login, password)
+    return global_transport_names[transport_name](host, port, login, password)
