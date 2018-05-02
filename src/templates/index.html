@@ -26,18 +26,20 @@
 
 <article class="A4">
     <h1>
-        Page title
+        Passed controls
     </h1>
     {% for record in report_data %}
     <article>
-        <h3>Файл {{ record.filename }} должен сущетвовать в корневой директории системы</h3>
-        <h4>id: {{ record.script_id }}</h4>
+        <h2> {{ record.header }} </h2>
+        <h4> Control id is: {{ record.script_id }} </h4>
 
-        <p> Требование: {{ record.descr }} </p>
-        <p> Система: {{ record.transports }}  </p>
-        <p> Статус: <span class="{{ record.status }}">{{ record.status }}</span></p>
+        <p> Check for file named "{{ record.filename }}" </p>
+        <p> Requirements: {{ record.requirement }} </p>
+        <p> System: {{ None }} </p>
+        <p> Status: <span class="{{ record.status }}">{{ record.status }}</span></p>
         <p>
-            empty field.
+            Description:
+            {{ record.descr }}
         </p>
     </article>
     {% endfor %}
