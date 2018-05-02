@@ -88,8 +88,10 @@ class SSHtransport():
         except paramiko.SSHException:
             raise TransportConnectionError('paramiko: SSHException')
         except IOError:
-            raise TransportIOError('file doesnt exist')
+            sftp.close()
+            return False
         sftp.close()
+        return True
 
 # Set default area of transport names
 global_transport_names = {
