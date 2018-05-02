@@ -34,14 +34,15 @@ def create_db():
     db = get_db_obj()
     curr = db.cursor()
     curr.execute('''
-        CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, descr TEXT)
+        CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, header TEXT, descr TEXT, filename TEXT, requirement TEXT)
         ''')
     curr.execute('''
         CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, descr TEXT, status TEXT)
         ''')
     controls = load_db()
     for cur_control in controls:
-        curr.execute("INSERT OR REPLACE INTO control(id, descr) VALUES(?, ?)", (cur_control[0], cur_control[1]))
+        curr.execute("INSERT OR REPLACE INTO control(id, header, descr, filename, requirement) VALUES(?, ?, ?, ?, ?)", 
+            (cur_control[0], cur_control[1], cur_control[2], cur_control[3], cur_control[4]))
     db.commit()
     db.close()
 
