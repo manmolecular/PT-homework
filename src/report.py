@@ -4,19 +4,31 @@ from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoesca
 from collections import namedtuple
 from weasyprint import HTML, CSS
 from db_handling import *
+import datetime
 
-report_data = []
-record = namedtuple('record','filename, header, script_id, descr, requirement, status')
+global_scan = {
+    'date': None,
+    'longitude': None,
+    'counter': None,
+    'counter_not_null': None
+}
 
-env = Environment(
-    loader = FileSystemLoader('templates'),
-    autoescape = select_autoescape(['html', 'xml'])
-)
+def scan_info(longitude):
+    db = get_db_obj()
+    curr = db.cursor()
+
+    global_scan['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
+    global_scan['longitude'] = longitude
+    global_scan['counter'] = curr.execute("SELECT Count(*) FROM scandata").fetchall()[0][0]
+    global_scan['counter_not_null'] = curr.execute("SELECT Count(*) FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
 
 def get_rendered_html():
     db = get_db_obj()
     curr = db.cursor()
+    record = namedtuple('record', 'filename, header, script_id, descr, requirement, status')
+    report_data = []
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
+
     for scan in scandata_ids:
         scan_id = scan[0]
         scan_header = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
@@ -24,12 +36,20 @@ def get_rendered_html():
         scan_status = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
         scan_filename = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         scan_requirements = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-
         report_data.append(record(filename = scan_filename, header = scan_header, script_id = scan_id, 
             descr = scan_descr, requirement = scan_requirements, status = scan_status))
 
+    scanrecord = namedtuple('scanrecord', 'date, longitude, counter, counter_not_null')
+    scan_data = scanrecord(date = global_scan['date'], longitude = global_scan['longitude'], 
+        counter = global_scan['counter'], counter_not_null = global_scan['counter_not_null'])
+
+    env = Environment(
+        loader = FileSystemLoader('templates'),
+        autoescape = select_autoescape(['html', 'xml'])
+    )
+
     template = env.get_template('index.html')
-    return template.render(report_data = report_data)
+    return template.render(report_data = report_data, scan_data = scan_data)
 
 def make_report():
     whtml = HTML(string=get_rendered_html().encode('utf8'))
