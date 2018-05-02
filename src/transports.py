@@ -54,14 +54,17 @@ class SSHtransport():
     def __del__(self):
         self.client.close()
 
-    def exec(self, command = ''):
+    def exec(self, command = None):
         if not command:
             raise TransportError({'command':command})
         stdin, stdout, stderr = self.client.exec_command(command)
         return stdout.read()
 
-    def get_file(self, file_name = _get_file_defaults['file_name'], 
-        remote_path = _get_file_defaults['remote_path'], local_path = _get_file_defaults['local_path']):
+    def get_file(self, file_name = None, remote_path = None, local_path = None):
+        file_name = file_name or _get_file_defaults['file_name']
+        remote_path = remote_path or _get_file_defaults['remote_path']
+        local_path = local_path or _get_file_defaults['local_path']
+
         if not file_name:
             raise TransportError({'file_name':file_name})
         file_remote = remote_path + file_name
@@ -76,8 +79,11 @@ class SSHtransport():
         sftp.get(file_remote, file_local)
         sftp.close()
 
-    def is_exist(self, file_name = _get_file_defaults['file_name'], 
-        remote_path = _get_file_defaults['remote_path'], local_path = _get_file_defaults['local_path']):
+    def is_exist(self, file_name = None, remote_path = None, local_path = None):
+        file_name = file_name or _get_file_defaults['file_name']
+        remote_path = remote_path or _get_file_defaults['remote_path']
+        local_path = local_path or _get_file_defaults['local_path']
+
         if not file_name:
             raise TransportError({'file_name':file_name})
         file_remote = remote_path + file_name
