@@ -107,18 +107,14 @@ def get_defaults(transport_name):
     }
 
 # Get unique transport of some class
-def get_transport(transport_name, host = '', port = '', login = '', password = ''):
+def get_transport(transport_name, host = None, port = None, login = None, password = None):
     if transport_name not in global_transport_names:
         raise TransportUnknown({'transport_name':transport_name})
     
     default = get_defaults(transport_name)
-    if not host:
-        host = default['host']
-    if not port:
-        port = default['port']
-    if not login:
-        login = default['login']
-    if not password:
-        password = default['password']
+    host = host or default['host']
+    port = port or default['port']
+    login = login or default['login']
+    password = password or default['password']
 
     return global_transport_names[transport_name](host, port, login, password)
