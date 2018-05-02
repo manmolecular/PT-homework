@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 # Main module for scripts calling
+from pathlib import Path
 from transports import *
 from db_handling import *
 from report import *
-import os
 import importlib
 import time
+import os
 
 _database = 'database.db'
 _scriptdir = 'scripts'
 
 # Import all scripts from folder
 def import_scripts():
-    for file in os.listdir('./' + _scriptdir):
-            if file.endswith('.py') and file != '__init__.py':
-                status = importlib.import_module(_scriptdir + '.' + file[:-3]).main()
-                script_id = int(file[0:3])
-                add_control(script_id, status)
+    script_dir = Path('./' + _scriptdir)
+    for file in script_dir.glob('**/*.py'):
+        if file.name != '__init__.py':
+            status = importlib.import_module('.' + file.name[:-3], package = _scriptdir).main()
+            script_id = int(file.name[0:3])
+            add_control(script_id, status)
 
 def is_db_exist():
     return os.path.isfile('./' + _database)
