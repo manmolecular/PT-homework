@@ -1,6 +1,6 @@
 [
-  ["000", "File named 'testfile' is present in the root folder on target system."],
-  ["001", "Some other control-1"],
-  ["010", "Some other control-2"],
-  ["100", "Some other control-3"]
+  ["000", "000_test_file_exists", "File named 'testfile' is present in the root folder on target system.", "testfile", "file must be in folder"],
+  ["001", "Header-1", "description-1", "filename-1", "requirement-1"],
+  ["010", "Header-2", "description-2", "filename-2", "requirement-2"],
+  ["100", "Header-3", "description-3", "filename-3", "requirement-3"]
 ]
