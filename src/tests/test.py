@@ -39,9 +39,8 @@ def test_SSH_exec_exc():
 def test_SSH_get_file_name_exc():
     SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).get_file('testfile')
-    with pytest.raises(TransportError):
-        SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-            SSHdefaults['login'], SSHdefaults['password']).get_file('')
+    SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
+        SSHdefaults['login'], SSHdefaults['password']).get_file('')
 
 def test_SSH_get_file_remote_exc():
     with pytest.raises(TransportError):
@@ -51,14 +50,8 @@ def test_SSH_get_file_remote_exc():
 def test_SSH_is_exist_name_exc():
     SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).is_exist('testfile')
-    with pytest.raises(TransportError):
-        SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-            SSHdefaults['login'], SSHdefaults['password']).is_exist('')
-
-def test_SSH_is_existremote_exc():
-    with pytest.raises(TransportError):
-       SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-            SSHdefaults['login'], SSHdefaults['password']).is_exist('_unknownfile_')
+    SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
+        SSHdefaults['login'], SSHdefaults['password']).is_exist('')
 
 # Database class test block
 
