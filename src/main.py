@@ -5,6 +5,7 @@ from db_handling import *
 from report import *
 import os
 import importlib
+import time
 
 _database = 'database.db'
 _scriptdir = 'scripts'
@@ -21,9 +22,12 @@ def is_db_exist():
     return os.path.isfile('./' + _database)
 
 def main():
+    start_time = time.time()
     if not is_db_exist():
         create_db()
     import_scripts()
+    end_time = time.time() - start_time
+    scan_info(end_time)
     make_report()
 
 if __name__ == "__main__":
