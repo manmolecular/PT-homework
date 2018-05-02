@@ -48,7 +48,7 @@ def create_db():
 def add_control(control_id, status):
     db = get_db_obj()
     curr = db.cursor()
-    descr = str(curr.execute("SELECT descr FROM control WHERE id = ?", str(control_id)).fetchone())[2:-3]
+    descr = (curr.execute("SELECT descr FROM control WHERE id = ?", str(control_id)).fetchone())[0]
     curr.execute("INSERT OR REPLACE INTO scandata(id, descr, status) VALUES(?, ?, ?)", 
             (control_id, descr, _statuses[status]))
     db.commit()
