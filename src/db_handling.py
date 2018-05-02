@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Create and manage database
+from enum import Enum
 import json
 import sqlite3
 import os.path
@@ -7,13 +8,13 @@ import os.path
 _json_db = None
 _db_contest = 'configs/controls.json'
 _db_name = 'database.db'
-_statuses = dict(enumerate(
-    ["STATUS_COMPLIANT",
-    "STATUS_NOT_COMPLIANT",
-    "STATUS_NOT_APPLICABLE",
-    "STATUS_ERROR",
-    "STATUS_EXCEPTION"]
-    ,1))
+
+class Status(Enum):
+    STATUS_COMPLIANT = 1
+    STATUS_NOT_COMPLIANT = 2
+    STATUS_NOT_APPLICABLE = 3
+    STATUS_ERROR = 4
+    STATUS_EXCEPTION = 5
 
 def get_db_obj():
     db = sqlite3.connect(_db_name)
@@ -51,6 +52,6 @@ def add_control(control_id, status):
     curr = db.cursor()
     descr = (curr.execute("SELECT descr FROM control WHERE id = ?", str(control_id)).fetchone())[0]
     curr.execute("INSERT OR REPLACE INTO scandata(id, descr, status) VALUES(?, ?, ?)", 
-            (control_id, descr, _statuses[status]))
+            (control_id, descr, Status(status).name))
     db.commit()
     db.close()
