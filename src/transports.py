@@ -25,17 +25,14 @@ class TransportError(Exception):
 class TransportUnknown(TransportError):
     def __init__(self, error_args):
         TransportError.__init__(self, error_args)
-        self.error_args = error_args
 
 class TransportConnectionError(TransportError):
     def __init__(self, error_args):
         TransportError.__init__(self, error_args)
-        self.error_args = error_args
 
 class TransportIOError(TransportError):
     def __init__(self, error_args):
         TransportError.__init__(self, error_args)
-        self.error_args = error_args
 
 
 # SSH transport class
