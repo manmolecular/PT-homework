@@ -1,49 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>System compliance report</title>
-</head>
-<body>
-
-<article class="A4">
-    <div class="main-page-wrapper">
-        <h1 class="main-title">
-            System compliance report
-        </h1>
-    </div>
-</article>
-
-<article class="A4">
-    <h1 class="main-title">
-        System summary
-    </h1>
-    <h1 class="main-title">
-        Compliance summary
-    </h1>
-</article>
-
-
-<article class="A4">
-    <h1>
-        Passed controls
-    </h1>
-    {% for record in report_data %}
-    <article>
-        <h2> {{ record.header }} </h2>
-        <h4> Control id is: {{ record.script_id }} </h4>
-
-        <p> Check for file named "{{ record.filename }}" </p>
-        <p> Requirements: {{ record.requirement }} </p>
-        <p> System: {{ None }} </p>
-        <p> Status: <span class="{{ record.status }}">{{ record.status }}</span></p>
-        <p>
-            Description:
-            {{ record.descr }}
-        </p>
-    </article>
-    {% endfor %}
-</article>
-
-</body>
+   <head>
+      <meta charset="UTF-8">
+      <title>System compliance report</title>
+   </head>
+   <body>
+      <article class="A4">
+         <div class="main-page-wrapper">
+            <h1 class="main-title">
+               System compliance report
+            </h1>
+         </div>
+      </article>
+      <article class="A4">
+         <h1 class="main-title">
+            System summary
+         </h1>
+         <h1 class="main-title">
+            Compliance summary
+         </h1>
+         <p> Date of scanning: {{ scan_data.date }} </p>
+         <p> Longitude of scanning: {{ scan_data.longitude }} </p>
+         <p> Number of tests in database: {{ scan_data.counter }} </p>
+         <p> Tests with not null statuses: {{ scan_data.counter_not_null }} </p>
+      </article>
+      <article class="A4">
+         <h1>
+            Passed controls
+         </h1>
+         {% for record in report_data %}
+         <article>
+            <h3> {{ record.header }} </h3>
+            <h4> Control id is: {{ record.script_id }} </h4>
+            <p> Check for file named "{{ record.filename }}" </p>
+            <p> Requirements: {{ record.requirement }} </p>
+            <p> System: {{ None }} </p>
+            <p> Status: <span class="{{ record.status }}">{{ record.status }}</span></p>
+            <p>
+               Description:
+               {{ record.descr }}
+            </p>
+         </article>
+         {% endfor %}
+      </article>
+   </body>
 </html>
