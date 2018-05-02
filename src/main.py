@@ -2,6 +2,7 @@
 # Main module for scripts calling
 from transports import *
 from db_handling import *
+from report import *
 import os
 import importlib
 
@@ -23,6 +24,7 @@ def main():
     if not is_db_exist():
         create_db()
     import_scripts()
+    make_report()
 
 if __name__ == "__main__":
     main()
