@@ -40,7 +40,8 @@ class SSHtransport():
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
             self.client.connect(hostname = host, username = login, password = password, port = port)
-        except paramiko.SSHException as e:
+        except (paramiko.BadHostKeyException, paramiko.AuthenticationException, 
+        paramiko.SSHException, socket.error) as e:
             raise TransportConnectionError(e) from e
             
     def __del__(self):
