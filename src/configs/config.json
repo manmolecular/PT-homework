@@ -5,6 +5,11 @@
       "password": "pwd",
       "login": "root",
       "port": 22022
+    },
+    "SQL": {
+        "password": "password",
+        "login": "root",
+        "port": 43306
     }
   }
 }
