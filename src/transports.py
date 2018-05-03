@@ -40,16 +40,8 @@ class SSHtransport():
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
             self.client.connect(hostname = host, username = login, password = password, port = port)
-        except  paramiko.BadHostKeyException:
-            raise TransportConnectionError('paramiko: BadHostKeyException')
-        except  paramiko.AuthenticationException:
-            raise TransportConnectionError('paramiko: AuthenticationException')
-        except paramiko.SSHException:
-            raise TransportConnectionError('paramiko: SSHException')
-        except socket.error:
-            raise TransportConnectionError('paramiko: socket.error')
-        except:
-            raise TransportConnectionError('connection refused by unknown reason')
+        except paramiko.SSHException as e:
+            raise TransportConnectionError(e) from e
             
     def __del__(self):
         self.client.close()
