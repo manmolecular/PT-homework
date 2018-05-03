@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # Main module for scripts calling
 from pathlib import Path
-from transports import *
-from db_handling import *
-from report import *
+from transports import SSHtransport
+from db_handling import add_control, create_db
+from report import scan_info, make_report
 import importlib
 import time
 import os
