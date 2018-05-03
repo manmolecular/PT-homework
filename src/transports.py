@@ -3,6 +3,7 @@
 from get_config import get_full_path, get_config
 
 import paramiko
+import pymysql.cursors
 import socket
 import json
 
@@ -32,6 +33,50 @@ class TransportIOError(TransportError):
     def __init__(self, error_args):
         TransportError.__init__(self, error_args)
 
+# MySQL transport
+class MySQLtransport():
+    def __init__(self, host, port, login, password):
+        self.connection = pymysql.connect(host = host, 
+            user = login, 
+            port = port, 
+            password = password, 
+            db = 'def_database', 
+            charset='utf8', 
+            cursorclass=pymysql.cursors.DictCursor, 
+            unix_socket=False)
+
+    def sql_exec(self, sql_query, sql_data):
+        with self.connection.cursor() as cursor:
+            if sql_query:
+                cursor.execute(sql_query, sql_data)
+                return cursor.fetchone()
+            else:
+                return None
+
+    def check_if_empty_table(self, table_name):
+        with self.connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_rows >= 1;
+                ''')
+            result_list = cursor.fetchall()
+            for result in result_list:
+                if result['table_name'] == table_name:
+                    return True
+            return False
+
+    def all_not_empty_tables(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_rows >= 1;
+                ''')
+            return cursor.fetchall()
+
+    def __del__(self):
+        self.connection.close()
 
 # SSH transport class
 class SSHtransport():
@@ -94,7 +139,8 @@ class SSHtransport():
 
 # Set default area of transport names
 global_transport_names = {
-        'SSH':SSHtransport
+        'SSH':SSHtransport,
+        'SQL':MySQLtransport
     }
 
 # Get defaults from config file
