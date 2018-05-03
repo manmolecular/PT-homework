@@ -17,6 +17,7 @@ global_scan = {
     'status': None,
     'filename': None,
     'requirements': None,
+    'transport': None
 }
 
 def scan_info(longitude):
@@ -32,7 +33,7 @@ def get_rendered_html():
     connection = connect_database()
     curr = connection.cursor()
 
-    control_script_info = namedtuple('control_script_info', 'filename, header, script_id, descr, requirement, status')
+    control_script_info = namedtuple('control_script_info', 'filename, header, script_id, descr, requirement, status, transport')
     basic_scan_info = namedtuple('basic_scan_info', 'date, longitude, counter, counter_not_null')
 
     report_data = []
@@ -45,13 +46,15 @@ def get_rendered_html():
         global_scan['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
         global_scan['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         global_scan['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['transport'] = curr.execute("SELECT transport FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         report_data.append(control_script_info(
             filename = global_scan['filename'], 
             header = global_scan['header'], 
             script_id = global_scan['id'], 
             descr = global_scan['descr'], 
             requirement = global_scan['requirements'], 
-            status = global_scan['status']))
+            status = global_scan['status'],
+            transport = global_scan['transport']))
 
     scan_data = basic_scan_info(
         date = global_scan['date'], 

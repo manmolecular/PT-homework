@@ -43,7 +43,7 @@ def create_db():
     try:
         with connection:
             curr.execute('''
-                CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, header TEXT, descr TEXT, filename TEXT, requirement TEXT)
+                CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, header TEXT, descr TEXT, filename TEXT, requirement TEXT, transport TEXT)
                 ''')
             curr.execute('''
                 CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, status TEXT)
@@ -55,8 +55,8 @@ def create_db():
     for cur_control in controls:
         try:
             with connection:
-                curr.execute("INSERT OR REPLACE INTO control(id, header, descr, filename, requirement) VALUES(?, ?, ?, ?, ?)", 
-                    (cur_control[0], cur_control[1], cur_control[2], cur_control[3], cur_control[4]))
+                curr.execute("INSERT OR REPLACE INTO control(id, header, descr, filename, requirement, transport) VALUES(?, ?, ?, ?, ?, ?)", 
+                    (cur_control[0], cur_control[1], cur_control[2], cur_control[3], cur_control[4], cur_control[5]))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
