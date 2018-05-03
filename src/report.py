@@ -14,8 +14,8 @@ global_scan = {
 }
 
 def scan_info(longitude):
-    db = get_db_obj()
-    curr = db.cursor()
+    connection = connect_database()
+    curr = connection.cursor()
 
     global_scan['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
     global_scan['longitude'] = longitude
@@ -23,8 +23,8 @@ def scan_info(longitude):
     global_scan['counter_not_null'] = curr.execute("SELECT Count(*) FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
 
 def get_rendered_html():
-    db = get_db_obj()
-    curr = db.cursor()
+    connection = connect_database()
+    curr = connection.cursor()
     record = namedtuple('record', 'filename, header, script_id, descr, requirement, status')
     report_data = []
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
