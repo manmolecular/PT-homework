@@ -10,7 +10,13 @@ global_scan = {
     'date': None,
     'longitude': None,
     'counter': None,
-    'counter_not_null': None
+    'counter_not_null': None,
+    'id': None,
+    'header': None,
+    'descr': None,
+    'status': None,
+    'filename': None,
+    'requirements': None,
 }
 
 def scan_info(longitude):
@@ -25,23 +31,33 @@ def scan_info(longitude):
 def get_rendered_html():
     connection = connect_database()
     curr = connection.cursor()
-    record = namedtuple('record', 'filename, header, script_id, descr, requirement, status')
+
+    control_script_info = namedtuple('control_script_info', 'filename, header, script_id, descr, requirement, status')
+    basic_scan_info = namedtuple('basic_scan_info', 'date, longitude, counter, counter_not_null')
+
     report_data = []
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
 
     for scan in scandata_ids:
-        scan_id = scan[0]
-        scan_header = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        scan_descr = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        scan_status = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
-        scan_filename = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        scan_requirements = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        report_data.append(record(filename = scan_filename, header = scan_header, script_id = scan_id, 
-            descr = scan_descr, requirement = scan_requirements, status = scan_status))
+        global_scan['id'] = scan[0]
+        global_scan['header'] = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['descrt'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        report_data.append(control_script_info(
+            filename = global_scan['filename'], 
+            header = global_scan['header'], 
+            script_id = global_scan['id'], 
+            descr = global_scan['descr'], 
+            requirement = global_scan['requirements'], 
+            status = global_scan['status']))
 
-    scanrecord = namedtuple('scanrecord', 'date, longitude, counter, counter_not_null')
-    scan_data = scanrecord(date = global_scan['date'], longitude = global_scan['longitude'], 
-        counter = global_scan['counter'], counter_not_null = global_scan['counter_not_null'])
+    scan_data = basic_scan_info(
+        date = global_scan['date'], 
+        longitude = global_scan['longitude'], 
+        counter = global_scan['counter'], 
+        counter_not_null = global_scan['counter_not_null'])
 
     env = Environment(
         loader = FileSystemLoader('templates'),
