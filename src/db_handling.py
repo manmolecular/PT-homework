@@ -46,7 +46,7 @@ def create_db():
                 CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, header TEXT, descr TEXT, filename TEXT, requirement TEXT)
                 ''')
             curr.execute('''
-                CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, descr TEXT, status TEXT)
+                CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, status TEXT)
                 ''')
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
@@ -67,9 +67,8 @@ def add_control(control_id, status):
     curr = connection.cursor()
     try:
         with connection:
-            descr = (curr.execute("SELECT descr FROM control WHERE id = ?", str(control_id)).fetchone())[0]
-            curr.execute("INSERT OR REPLACE INTO scandata(id, descr, status) VALUES(?, ?, ?)", 
-                    (control_id, descr, Status(status).name))
+            curr.execute("INSERT OR REPLACE INTO scandata(id, status) VALUES(?, ?)", 
+                    (control_id, Status(status).name))
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
 
