@@ -34,7 +34,7 @@ def test_SSH_exec_exc():
         SSHdefaults['login'], SSHdefaults['password']).exec('ls')
     with pytest.raises(TransportError):
         SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-            SSHdefaults['login'], SSHdefaults['password']).exec('')
+            SSHdefaults['login'], SSHdefaults['password']).exec()
 
 def test_SSH_get_file_name_exc():
     SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
@@ -59,11 +59,11 @@ def test_create_db():
     if not os.path.isfile('./' + _database):
         create_db()
 
-def test_get_db_obj():
-    get_db_obj()
+def test_connect_database():
+    connect_database()
 
-def test_load_db():
-    load_db()
+def test_load_json():
+    load_json()
 
 def test_add_control():
     add_control(0, 1)
