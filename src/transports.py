@@ -53,6 +53,16 @@ class MySQLtransport():
             else:
                 return None
 
+    def check_database_exist(self, database_name):
+        with self.connection.cursor() as cursor:
+            sql_query = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = %s'
+            cursor.execute(sql_query, database_name)
+            result = cursor.fetchone()
+            if result:
+                return True
+            else:
+                return False
+
     def check_if_empty_table(self, table_name):
         with self.connection.cursor() as cursor:
             cursor.execute('''
