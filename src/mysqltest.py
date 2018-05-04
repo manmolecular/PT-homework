@@ -2,6 +2,9 @@
 from transports import get_transport, MySQLtransport
 import pymysql.cursors
 
+sql_data = 'webmaster@python.org'
+trans = get_transport('SQL')
+
 connection = pymysql.connect(host = 'localhost', 
             user = 'root', 
             port = 43306, 
@@ -10,6 +13,11 @@ connection = pymysql.connect(host = 'localhost',
             charset='utf8', 
             cursorclass=pymysql.cursors.DictCursor, 
             unix_socket=False)
+
+with connection.cursor() as cursor:
+    cursor.execute('''
+        DROP TABLE IF EXISTS users;
+        ''')
 
 with connection.cursor() as cursor:
     cursor.execute('''
@@ -26,9 +34,7 @@ with connection.cursor() as cursor:
     cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
 
 connection.commit()
-
-sql_data = 'webmaster@python.org'
-trans = get_transport('SQL')
+connection.close()
 
 print(trans.sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", sql_data))
 print(trans.check_if_empty_table('users'))
