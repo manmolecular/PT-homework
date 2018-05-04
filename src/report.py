@@ -20,7 +20,7 @@ global_scan = {
     'transport': None
 }
 
-def scan_info(longitude):
+def scan_info(longitude = None):
     connection = connect_database()
     curr = connection.cursor()
 

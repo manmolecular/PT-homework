@@ -36,14 +36,17 @@ class TransportIOError(TransportError):
 # MySQL transport
 class MySQLtransport():
     def __init__(self, host, port, login, password):
-        self.connection = pymysql.connect(host = host, 
-            user = login, 
-            port = port, 
-            password = password, 
-            db = 'def_database', 
-            charset='utf8', 
-            cursorclass=pymysql.cursors.DictCursor, 
-            unix_socket=False)
+        try:
+            self.connection = pymysql.connect(host = host, 
+                user = login, 
+                port = port, 
+                password = password, 
+                db = 'def_database', 
+                charset='utf8', 
+                cursorclass=pymysql.cursors.DictCursor, 
+                unix_socket=False)
+        except pymysql.MySQLError as e:
+            raise TransportConnectionError(e) from e
 
     def sql_exec(self, sql_query, sql_data):
         with self.connection.cursor() as cursor:
@@ -71,7 +74,7 @@ class MySQLtransport():
             cursor.execute('''
                 SELECT table_name
                 FROM information_schema.tables
-                WHERE table_rows >= 1;
+                WHERE table_rows = 0;
                 ''')
             result_list = cursor.fetchall()
             for result in result_list:
@@ -85,6 +88,15 @@ class MySQLtransport():
                 SELECT table_name
                 FROM information_schema.tables
                 WHERE table_rows >= 1;
+                ''')
+            return cursor.fetchall()
+
+    def all_empty_tables(self):
+        with self.connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_rows = 0;
                 ''')
             return cursor.fetchall()
 

@@ -22,7 +22,10 @@ class Status(Enum):
     STATUS_EXCEPTION = 5
 
 def connect_database():
-    connection = sqlite3.connect(_db_name)
+    try:
+        connection = sqlite3.connect(_db_name)
+    except sqlite3.Error as e:
+        raise DatabaseError(e.args[0])
     return connection
 
 def get_full_path():
@@ -63,6 +66,8 @@ def create_db():
     connection.close()
 
 def add_control(control_id, status):
+    if (1 > status) or (status > 5):
+        raise DatabaseError('wrong status')
     connection = connect_database()
     curr = connection.cursor()
     try:
