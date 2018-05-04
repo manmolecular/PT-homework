@@ -42,7 +42,7 @@ def get_rendered_html():
     for scan in scandata_ids:
         global_scan['id'] = scan[0]
         global_scan['header'] = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['descrt'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        global_scan['descr'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         global_scan['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
         global_scan['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         global_scan['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
