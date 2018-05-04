@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # First test - check file existense
-from transports import get_transport, SSHtransport
+from transports import get_transport, SSHtransport, TransportUnknown
 from db_handling import Status
 
 _file_name = 'testfile'
