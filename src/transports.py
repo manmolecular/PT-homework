@@ -48,8 +48,11 @@ class MySQLtransport():
     def sql_exec(self, sql_query, sql_data):
         with self.connection.cursor() as cursor:
             if sql_query:
-                cursor.execute(sql_query, sql_data)
-                return cursor.fetchone()
+                try:
+                    cursor.execute(sql_query, sql_data)
+                    return cursor.fetchone()
+                except pymysql.MySQLError as e:
+                    raise TransportError(e) from e
             else:
                 return None
 
