@@ -72,7 +72,7 @@ def test_add_control():
 
 # Mysql transport class test block
 
-def test_create_database():
+def test_sql_exec_empty():
     connection = pymysql.connect(host = 'localhost', 
             user = 'root', 
             port = 43306, 
@@ -81,6 +81,32 @@ def test_create_database():
             charset='utf8', 
             cursorclass=pymysql.cursors.DictCursor, 
             unix_socket=False)
+
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            DROP TABLE IF EXISTS users;
+            ''')
+
+        connection.commit()
+        connection.close()
+
+    with pytest.raises(TransportError):
+        get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", 'webmaster@python.org')
+
+def test_insert_db():
+    connection = pymysql.connect(host = 'localhost', 
+            user = 'root', 
+            port = 43306, 
+            password = 'password', 
+            db = 'def_database', 
+            charset='utf8', 
+            cursorclass=pymysql.cursors.DictCursor, 
+            unix_socket=False)
+
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            DROP TABLE IF EXISTS users;
+            ''')
 
     with connection.cursor() as cursor:
         cursor.execute('''
@@ -97,6 +123,7 @@ def test_create_database():
         cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
 
     connection.commit()
+    connection.close()
 
 def test_get_sql_transport():
     get_transport('SQL')
@@ -104,11 +131,20 @@ def test_get_sql_transport():
 def test_sql_exec():
     get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", 'webmaster@python.org')
 
+def test_sql_exec_empty():
+    get_transport('SQL').sql_exec("", '')
+
 def test_check_empty_table():
     get_transport('SQL').check_if_empty_table('users')
+
+def test_check_unknown_empty_table():
+    get_transport('SQL').check_if_empty_table('_unknown_')
 
 def test_all_not_empty_tables():
     get_transport('SQL').all_not_empty_tables()
 
 def test_database_exist():
     get_transport('SQL').check_database_exist('def_database')
+
+def test_unknown_database_exist():
+    get_transport('SQL').check_database_exist('_unknown_')
