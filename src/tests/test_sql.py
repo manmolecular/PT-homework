@@ -69,6 +69,7 @@ def drop_n_create_table():
     connection.close()
 
 def test_mysql_init():
+    prepare_base()
     sql_transport = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
         SQLdefaults['login'], SQLdefaults['password'])
     assert (isinstance(sql_transport, MySQLtransport) == True)
