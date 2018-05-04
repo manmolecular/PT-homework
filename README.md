@@ -72,3 +72,7 @@ From `src/tests/`
 ```
 pytest test.py
 ```
+## To test PyMySQL you need to install python3-pymysql
+```
+sudo apt-get install python3-pymysql
+```
