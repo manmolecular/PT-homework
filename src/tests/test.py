@@ -69,3 +69,46 @@ def test_add_control():
     add_control(0, 1)
     with pytest.raises(Exception):
         add_control('invalid id','invalid status')
+
+# Mysql transport class test block
+
+def test_create_database():
+    connection = pymysql.connect(host = 'localhost', 
+            user = 'root', 
+            port = 43306, 
+            password = 'password', 
+            db = 'def_database', 
+            charset='utf8', 
+            cursorclass=pymysql.cursors.DictCursor, 
+            unix_socket=False)
+
+    with connection.cursor() as cursor:
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS `users` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `email` varchar(255) COLLATE utf8_bin NOT NULL,
+        `password` varchar(255) COLLATE utf8_bin NOT NULL,
+        PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+            AUTO_INCREMENT=1 ;''')
+
+    with connection.cursor() as cursor:
+        sql = "INSERT IGNORE INTO `users` (`email`, `password`) VALUES (%s, %s)"
+        cursor.execute(sql, ('webmaster@python.org', 'very-secret'))
+
+    connection.commit()
+
+def test_get_sql_transport():
+    get_transport('SQL')
+
+def test_sql_exec():
+    get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", 'webmaster@python.org')
+
+def test_check_empty_table():
+    get_transport('SQL').check_if_empty_table('users')
+
+def test_all_not_empty_tables():
+    get_transport('SQL').all_not_empty_tables()
+
+def test_database_exist():
+    get_transport('SQL').check_database_exist('def_database')
