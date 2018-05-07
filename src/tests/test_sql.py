@@ -67,7 +67,7 @@ def test_mysql_init():
     prepare_base()
     sql_transport = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
         SQLdefaults['login'], SQLdefaults['password'])
-    assert (isinstance(sql_transport, MySQLtransport) == True)
+    assert isinstance(sql_transport, MySQLtransport)
 
 def test_mysql_wrong_host():
     with pytest.raises(TransportConnectionError):
@@ -91,12 +91,12 @@ def test_mysql_wrong_password():
 
 def test_get_transport():
     sql_transport = get_transport('SQL')
-    assert (isinstance(sql_transport, MySQLtransport) == True)
+    assert isinstance(sql_transport, MySQLtransport)
 
 def test_exec():
     prepare_base()
     sql_transport = get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", sql_data)
-    assert (isinstance(sql_transport, dict) == True)
+    assert isinstance(sql_transport, dict)
 
 def test_empty_exec():
     sql_transport = get_transport('SQL').sql_exec("", "")
@@ -104,26 +104,26 @@ def test_empty_exec():
 
 def test_not_empty_table():
     sql_transport = get_transport('SQL').check_if_empty_table('users')
-    assert sql_transport is False
+    assert not sql_transport
 
 def test_empty_table():
     drop_n_create_table()
     sql_transport = get_transport('SQL').check_if_empty_table('users')
-    assert sql_transport is True
+    assert sql_transport
 
 def test_all_empty_tables():
     prepare_base()
     sql_transport = get_transport('SQL').all_empty_tables()
-    assert (isinstance(sql_transport, list) == True)
+    assert isinstance(sql_transport, list)
 
 def test_all_not_empty_tables():
     sql_transport = get_transport('SQL').all_not_empty_tables()
-    assert (isinstance(sql_transport, list) == True)
+    assert isinstance(sql_transport, list)
 
 def test_check_database_exist():
     sql_transport = get_transport('SQL').check_database_exist('def_database')
-    assert sql_transport is True
+    assert sql_transport
 
 def test_check_database_not_exist():
     sql_transport = get_transport('SQL').check_database_exist('_unknown_')
-    assert sql_transport is False
+    assert not sql_transport

@@ -10,11 +10,11 @@ SSHdefaults = get_defaults('SSH')
 def test_get_transport_with_args():
     transport_instance = get_transport('SSH', SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password'])
-    assert (isinstance(transport_instance, SSHtransport) == True)
+    assert isinstance(transport_instance, SSHtransport)
 
 def test_get_transport_without_args():
     transport_instance = get_transport('SSH')
-    assert (isinstance(transport_instance, SSHtransport) == True)
+    assert isinstance(transport_instance, SSHtransport)
 
 def test_get_transport_empty_host():
     with pytest.raises(TransportUnknown):
@@ -25,7 +25,7 @@ def test_get_transport_empty_host():
 def test_init_exceptions():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password'])
-    assert (isinstance(transport_instance, SSHtransport) == True)
+    assert isinstance(transport_instance, SSHtransport)
 
 def test_wrong_host():
     with pytest.raises(TransportConnectionError):
@@ -51,7 +51,7 @@ def test_wrong_pass():
 def test_exec():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).exec('ls')
-    assert (isinstance(transport_instance, bytes) == True)
+    assert isinstance(transport_instance, bytes)
 
 def test_exec_exception():
     with pytest.raises(TransportError):
@@ -79,9 +79,9 @@ def test_getfile_wrong_name_exception():
 def test_exist_file():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).is_exist('testfile')
-    assert transport_instance is True
+    assert transport_instance
 
 def test_not_exist_file():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).is_exist('_doesntexist_')
-    assert transport_instance is False
+    assert not transport_instance
