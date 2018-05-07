@@ -22,14 +22,6 @@ def test_create_database():
     create_database = create_db()
     assert create_database is None
 
-def test_add_control_more():
-    with pytest.raises(DatabaseError):
-        add_control(0, 10)
-
-def test_add_control_less():
-    with pytest.raises(DatabaseError):
-        add_control(0, 0)
-
 def test_add_control_good():
     for i in range(1,5):
         control_func = add_control(0, i)
