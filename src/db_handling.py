@@ -54,13 +54,13 @@ class sqlite_handle():
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS control(id INTEGER
-                    PRIMARY KEY, header TEXT, descr TEXT, 
+                    PRIMARY KEY, header TEXT, descr TEXT,
                     filename TEXT, requirement TEXT, transport TEXT)
                     '''
                     )
                 self.connection.execute(
                     '''
-                    CREATE TABLE IF NOT EXISTS 
+                    CREATE TABLE IF NOT EXISTS
                     scandata(id INTEGER PRIMARY KEY, status TEXT)
                     '''
                     )
@@ -75,13 +75,13 @@ class sqlite_handle():
                     self.connection.execute(
                         "INSERT OR REPLACE INTO \
                         control(id, header, descr, filename, requirement, \
-                        transport) VALUES(?, ?, ?, ?, ?, ?)", 
+                        transport) VALUES(?, ?, ?, ?, ?, ?)",
                         (
-                            cur_control[0], 
-                            cur_control[1], 
-                            cur_control[2], 
-                            cur_control[3], 
-                            cur_control[4], 
+                            cur_control[0],
+                            cur_control[1],
+                            cur_control[2],
+                            cur_control[3],
+                            cur_control[4],
                             cur_control[5])
                         )
         except sqlite3.Error as e:
@@ -92,8 +92,8 @@ class sqlite_handle():
             with self.connection:
                 self.connection.execute(
                     "INSERT OR REPLACE INTO scandata \
-                    (id, status) VALUES(?, ?)", 
-                        (control_id, Status(status).name))
+                    (id, status) VALUES(?, ?)",
+                    (control_id, Status(status).name))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
