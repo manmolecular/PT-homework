@@ -62,26 +62,15 @@ def test_exec_exception():
 def test_getfile_exists():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).get_file('testfile')
-    assert transport_instance is None
+    assert isinstance(transport_instance, bytes)
 
 def test_empty_file():
     transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
         SSHdefaults['login'], SSHdefaults['password']).get_file('')
-    assert transport_instance is None
+    assert isinstance(transport_instance, bytes)
 
 # Check for getting not existing file
 def test_getfile_wrong_name_exception():
     with pytest.raises(TransportError):
        SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
             SSHdefaults['login'], SSHdefaults['password']).get_file('_unknownfile_')
-
-# Check existence of file
-def test_exist_file():
-    transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-        SSHdefaults['login'], SSHdefaults['password']).is_exist('testfile')
-    assert transport_instance
-
-def test_not_exist_file():
-    transport_instance = SSHtransport(SSHdefaults['host'], SSHdefaults['port'], 
-        SSHdefaults['login'], SSHdefaults['password']).is_exist('_doesntexist_')
-    assert not transport_instance
