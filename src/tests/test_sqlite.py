@@ -27,6 +27,10 @@ def test_create_database():
     assert create_database is None
 
 def test_add_control_good():
-    for i in range(1,5):
-        control_func = LOCAL_DB.add_control(0, i)
-        assert control_func is None
+    connection = connect_database()
+    with connection:
+        for i in range(1,5):
+            control_func = LOCAL_DB.add_control(0, i)
+            value_from_db = connection.execute('SELECT status FROM scandata WHERE id = 0').fetchone()[0]
+            value_from_enum = Status(i).name
+            assert (value_from_db == value_from_enum)
