@@ -6,6 +6,7 @@ from pathlib import Path
 JSON_CONFIG = None
 CONFIG_CONTEST = 'configs/config.json'
 
+
 def get_config():
     global JSON_CONFIG
     if not JSON_CONFIG:
