@@ -9,10 +9,12 @@ JSON_DB = None
 DB_CONTEST = 'configs/controls.json'
 DB_NAME = 'database.db'
 
+
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
         Exception.__init__(self, 'DatabaseError {}'.format(error_args))
         self.error_args = error_args
+
 
 class Status(Enum):
     STATUS_COMPLIANT = 1
@@ -21,6 +23,7 @@ class Status(Enum):
     STATUS_ERROR = 4
     STATUS_EXCEPTION = 5
 
+
 def connect_database():
     try:
         connection = sqlite3.connect(DB_NAME)
@@ -28,9 +31,11 @@ def connect_database():
         raise DatabaseError(e.args[0])
     return connection
 
+
 def get_full_path():
     my_path = os.path.abspath(os.path.dirname(__file__))
     return os.path.join(my_path, DB_CONTEST)
+
 
 def load_json():
     global JSON_DB
@@ -38,6 +43,7 @@ def load_json():
         with open(get_full_path(),'r') as f:
             JSON_DB = json.load(f)
     return JSON_DB
+
      
 def create_db():
     connection = connect_database()
@@ -64,6 +70,7 @@ def create_db():
             raise DatabaseError(e.args[0])
 
     connection.close()
+
 
 def add_control(control_id, status):
     if (1 > status) or (status > 5):
