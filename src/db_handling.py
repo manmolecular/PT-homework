@@ -64,9 +64,10 @@ def create_db():
 
     controls = load_json()
 
-    for cur_control in controls:
-        try:
-            with connection:
+
+    try:
+        with connection:
+            for cur_control in controls:
                 connection.execute(
                     "INSERT OR REPLACE INTO \
                     control(id, header, descr, filename, requirement, \
@@ -79,8 +80,8 @@ def create_db():
                         cur_control[4], 
                         cur_control[5])
                     )
-        except sqlite3.Error as e:
-            raise DatabaseError(e.args[0])
+    except sqlite3.Error as e:
+        raise DatabaseError(e.args[0])
 
     connection.close()
 
