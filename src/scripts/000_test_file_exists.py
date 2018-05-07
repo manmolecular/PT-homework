@@ -10,8 +10,8 @@ def main():
     try:
         func_status = get_transport(_transport_name).is_exist(_file_name)
     except TransportUnknown:
-        return Status.STATUS_ERROR.value
+        return Status.STATUS_ERROR
     if not func_status:
-        return Status.STATUS_NOT_COMPLIANT.value
+        return Status.STATUS_NOT_COMPLIANT
     if func_status:
-        return Status.STATUS_COMPLIANT.value
+        return Status.STATUS_COMPLIANT
