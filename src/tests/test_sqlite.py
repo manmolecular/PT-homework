@@ -4,7 +4,6 @@ from db_handling import connect_database, load_json, DatabaseError, sqlite_handl
 import sqlite3
 import pytest
 
-database = 'database.db'
 LOCAL_DB = sqlite_handle()
 
 # Check if function return object of sqlite3
