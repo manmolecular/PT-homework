@@ -24,7 +24,13 @@ def test_json_loader():
 
 def test_create_database():
     create_database = LOCAL_DB.create_db()
-    assert create_database is None
+    connection = connect_database()
+    with connection:
+        assert isinstance(connection.execute(
+            'SELECT * from control').fetchall(), list)
+        assert isinstance(connection.execute(
+            'SELECT * from control').fetchall(), list)
+    connection.close()
 
 def test_add_control_good():
     connection = connect_database()
@@ -34,3 +40,4 @@ def test_add_control_good():
             value_from_db = connection.execute('SELECT status FROM scandata WHERE id = 0').fetchone()[0]
             value_from_enum = Status(i).name
             assert (value_from_db == value_from_enum)
+    connection.close()
