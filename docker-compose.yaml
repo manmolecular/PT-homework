@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: def_database
+    ports:
+      - '43306:3306'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - '8080:8080'
+
+  sshd:
+    build: img-ubuntu-sshd
+    ports:
+      - '22022:22'
