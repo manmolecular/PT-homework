@@ -45,8 +45,10 @@ def scan_info(longitude = None):
 
     SCAN_STRUCTURE['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
     SCAN_STRUCTURE['longitude'] = longitude
-    SCAN_STRUCTURE['counter'] = curr.execute("SELECT Count(*) FROM scandata").fetchall()[0][0]
-    SCAN_STRUCTURE['counter_not_null'] = curr.execute("SELECT Count(*) FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
+    SCAN_STRUCTURE['counter'] = curr.execute("SELECT Count(*) FROM \
+        scandata").fetchall()[0][0]
+    SCAN_STRUCTURE['counter_not_null'] = curr.execute("SELECT Count(*) \
+        FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
 
 
 def get_rendered_html():
@@ -57,13 +59,18 @@ def get_rendered_html():
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
 
     for scan in scandata_ids:
-        SCAN_STRUCTURE['id'] = scan[0]
-        SCAN_STRUCTURE['header'] = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        SCAN_STRUCTURE['descr'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        SCAN_STRUCTURE['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
-        SCAN_STRUCTURE['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        SCAN_STRUCTURE['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        SCAN_STRUCTURE['transport'] = curr.execute("SELECT transport FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        from_control = curr.execute("SELECT * FROM control \
+            WHERE id = ?", str(scan[0])).fetchone()
+        scandata_status = curr.execute("SELECT status FROM \
+            scandata WHERE id = ?", str(scan[0])).fetchone()[0]
+
+        SCAN_STRUCTURE['id'] = from_control[0]
+        SCAN_STRUCTURE['header'] = from_control[1]
+        SCAN_STRUCTURE['descr'] = from_control[2]
+        SCAN_STRUCTURE['status'] = scandata_status
+        SCAN_STRUCTURE['filename'] = from_control[3]
+        SCAN_STRUCTURE['requirements'] = from_control[4]
+        SCAN_STRUCTURE['transport'] = from_control[5]
         report_data.append(control_script_info(
             filename = SCAN_STRUCTURE['filename'], 
             header = SCAN_STRUCTURE['header'], 
