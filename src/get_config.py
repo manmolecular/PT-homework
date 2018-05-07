@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 # Get configuration from json file
 import json
-import os.path
+from pathlib import Path
 
-_json_config = None
-_config_name = 'configs/config.json'
-
-def get_full_path():
-    my_path = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(my_path, _config_name)
+JSON_CONFIG = None
+CONFIG_CONTEST = 'configs/config.json'
 
 def get_config():
-    global _json_config
-    if not _json_config:
-        with open(get_full_path(),'r') as f:
-            _json_config = json.load(f)
-    return _json_config
+    global JSON_CONFIG
+    if not JSON_CONFIG:
+        with Path('.').joinpath(CONFIG_CONTEST).open() as f:
+            JSON_CONFIG = json.load(f)
+    return JSON_CONFIG
