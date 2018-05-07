@@ -65,65 +65,65 @@ def drop_n_create_table():
 
 def test_mysql_init():
     prepare_base()
-    sql_transport = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
+    result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
         SQLdefaults['login'], SQLdefaults['password'])
-    assert isinstance(sql_transport, MySQLtransport)
+    assert isinstance(result, MySQLtransport)
 
 def test_mysql_wrong_host():
     with pytest.raises(TransportConnectionError):
-        sql_transport = MySQLtransport('_wrong_', SQLdefaults['port'], 
+        result = MySQLtransport('_wrong_', SQLdefaults['port'], 
             SQLdefaults['login'], SQLdefaults['password'])
 
 def test_mysql_wrong_port():
     with pytest.raises(TransportConnectionError):
-        sql_transport = MySQLtransport(SQLdefaults['host'], -1, 
+        result = MySQLtransport(SQLdefaults['host'], -1, 
             SQLdefaults['login'], SQLdefaults['password'])
 
 def test_mysql_wrong_user():
     with pytest.raises(TransportConnectionError):
-        sql_transport = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
+        result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
             '_wrong_', SQLdefaults['password'])
 
 def test_mysql_wrong_password():
     with pytest.raises(TransportConnectionError):
-        sql_transport = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
+        result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
             SQLdefaults['login'], '_wrong_')
 
 def test_get_transport():
-    sql_transport = get_transport('SQL')
-    assert isinstance(sql_transport, MySQLtransport)
+    result = get_transport('SQL')
+    assert isinstance(result, MySQLtransport)
 
 def test_exec():
     prepare_base()
-    sql_transport = get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", sql_data)
-    assert isinstance(sql_transport, dict)
+    result = get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", sql_data)
+    assert isinstance(result, dict)
 
 def test_empty_exec():
-    sql_transport = get_transport('SQL').sql_exec("", "")
-    assert sql_transport is None
+    result = get_transport('SQL').sql_exec("", "")
+    assert result is None
 
 def test_not_empty_table():
-    sql_transport = get_transport('SQL').check_if_empty_table('users')
-    assert not sql_transport
+    result = get_transport('SQL').check_if_empty_table('users')
+    assert not result
 
 def test_empty_table():
     drop_n_create_table()
-    sql_transport = get_transport('SQL').check_if_empty_table('users')
-    assert sql_transport
+    result = get_transport('SQL').check_if_empty_table('users')
+    assert result
 
 def test_all_empty_tables():
     prepare_base()
-    sql_transport = get_transport('SQL').all_empty_tables()
-    assert isinstance(sql_transport, list)
+    result = get_transport('SQL').all_empty_tables()
+    assert isinstance(result, list)
 
 def test_all_not_empty_tables():
-    sql_transport = get_transport('SQL').all_not_empty_tables()
-    assert isinstance(sql_transport, list)
+    result = get_transport('SQL').all_not_empty_tables()
+    assert isinstance(result, list)
 
 def test_check_database_exist():
-    sql_transport = get_transport('SQL').check_database_exist('def_database')
-    assert sql_transport
+    result = get_transport('SQL').check_database_exist('def_database')
+    assert result
 
 def test_check_database_not_exist():
-    sql_transport = get_transport('SQL').check_database_exist('_unknown_')
-    assert not sql_transport
+    result = get_transport('SQL').check_database_exist('_unknown_')
+    assert not result
