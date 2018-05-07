@@ -26,14 +26,6 @@ class Status(Enum):
     STATUS_EXCEPTION = 5
 
 
-def connect_database():
-    try:
-        connection = sqlite3.connect(DB_NAME)
-    except sqlite3.Error as e:
-        raise DatabaseError(e.args[0])
-    return connection
-
-
 def load_json():
     global JSON_DB
     if not JSON_DB:
@@ -42,59 +34,69 @@ def load_json():
     return JSON_DB
 
 
-def create_db():
-    if Path(DB_NAME).is_file():
-        return
-
-    connection = connect_database()
-
+def connect_database():
     try:
-        with connection:
-            connection.execute('''
-                CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, 
-                    header TEXT, descr TEXT, filename TEXT, requirement TEXT, 
-                    transport TEXT)
-                ''')
-            connection.execute('''
-                CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, 
-                    status TEXT)
-                ''')
+        connection = sqlite3.connect(DB_NAME)
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
+    return connection
 
-    controls = load_json()
 
+class sqlite_handle():
+    def __init__(self):
+        try:
+            self.connection = sqlite3.connect(DB_NAME)
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
-    try:
-        with connection:
-            for cur_control in controls:
-                connection.execute(
-                    "INSERT OR REPLACE INTO \
-                    control(id, header, descr, filename, requirement, \
-                    transport) VALUES(?, ?, ?, ?, ?, ?)", 
-                    (
-                        cur_control[0], 
-                        cur_control[1], 
-                        cur_control[2], 
-                        cur_control[3], 
-                        cur_control[4], 
-                        cur_control[5])
+    def create_db(self):
+        try:
+            with self.connection:
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS control(id INTEGER
+                    PRIMARY KEY, header TEXT, descr TEXT, 
+                    filename TEXT, requirement TEXT, transport TEXT)
+                    '''
                     )
-    except sqlite3.Error as e:
-        raise DatabaseError(e.args[0])
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS 
+                    scandata(id INTEGER PRIMARY KEY, status TEXT)
+                    '''
+                    )
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
-    connection.close()
+        controls = load_json()
 
+        try:
+            with self.connection:
+                for cur_control in controls:
+                    self.connection.execute(
+                        "INSERT OR REPLACE INTO \
+                        control(id, header, descr, filename, requirement, \
+                        transport) VALUES(?, ?, ?, ?, ?, ?)", 
+                        (
+                            cur_control[0], 
+                            cur_control[1], 
+                            cur_control[2], 
+                            cur_control[3], 
+                            cur_control[4], 
+                            cur_control[5])
+                        )
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
-def add_control(control_id, status):
-    connection = connect_database()
-    try:
-        with connection:
-            connection.execute(
-                "INSERT OR REPLACE INTO scandata \
-                (id, status) VALUES(?, ?)", 
-                    (control_id, Status(status).name))
-    except sqlite3.Error as e:
-        raise DatabaseError(e.args[0])
+    def add_control(self, control_id, status):
+        try:
+            with self.connection:
+                self.connection.execute(
+                    "INSERT OR REPLACE INTO scandata \
+                    (id, status) VALUES(?, ?)", 
+                        (control_id, Status(status).name))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
-    connection.close()
+    def __del__(self):
+        self.connection.close()
