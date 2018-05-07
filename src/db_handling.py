@@ -42,14 +42,10 @@ def load_json():
     return JSON_DB
 
 
-def database_exist():
-    return os.path.isfile('./' + DB_NAME)
-
-
 def create_db():
-    if database_exist():
+    if Path(DB_NAME).is_file():
         return
-        
+
     connection = connect_database()
 
     try:
