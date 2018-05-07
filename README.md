@@ -6,6 +6,7 @@ PT-exercises/src
 │   db_handling.py
 │   get_config.py
 │   main.py
+|   report.py
 |   transports.py
 |
 └─── configs
@@ -18,31 +19,42 @@ PT-exercises/src
 |   │   000_test_file_exists.py
 |   |   ...
 |
+└─── templates
+│   │   index.html
+│   │   style.css
+|   |   test.html
+|   |   ...
+|
 └─── tests
     │   __init__.py
-    │   test.py
+    │   test_sql.py
+    |   test_sqlite.py
+    |   test_ssh.py
     |   ...
 ```
 ## Files  
 ### Main code  
-- `src/db_handling.py` - *Manage all database work on this module (include json parsing)*
-- `src/get_config.py` - *Parsing of json configuration file*
-- `src/main.py` - *Main module*
-- `src/transports.py` - *SSH transport class*
+- `src/db_handling.py` - Manage all sqlite-database work on this module
+- `src/get_config.py` - Parsing of json configuration file
+- `src/main.py` - Main module
+- `src/transports.py` - Transport classes
+- `src/report.py` - Making of pdf scanning report
 ### Dirs  
-- `src/configs/` - *Json configs files*
-- `src/scripts/` - *Directory for importing libs*
+- `src/configs/` - Json configs file
+- `src/scripts/` - Directory for importing libs
 ### Tests  
-- `src/tests/` - *Pytest tests*
+- `src/tests/` - Pytest tests
 ### Other tools  
 - `img-ubuntu-python` - docker with ubuntu and python3  
 - `img-ubuntu-sshd` - docker with ubuntu and sshd 
-- `requirements.txt` - *virtualenv python requirements*
-- `server-up.sh` - *up docker ssh server*
+- `requirements.txt` - virtualenv python requirements
+- `build-ssh.sh` - up docker ssh server
+- `mariadb-up.sh` - up mariadb server
 # Notes  
 ## Requirements  
-Basically you need just latest python3 (*for example 3.6.5 or whatever you want*) and `paramiko` module, which can be installed with pip
-## Build containers  
+Basically you need just latest python3 (*for example 3.6.5 or whatever you want*) and pip modules installed from `requirements.txt`
+## Build containers of ssh
+### You can use `build-ssh.sh` or do it manually:
 For python:  
 ```
 cd ./img-ubuntu-python/ && docker build . -t img-ubuntu-python
@@ -70,9 +82,10 @@ sudo pip3 install paramiko
 ## Pytest
 From `src/tests/`
 ```
-pytest test.py
+pytest
 ```
-## To test PyMySQL you need to install python3-pymysql
+## PyMySQL + Pytest
+To test PyMySQL with pytest you need to install `python3-pymysql` package
 ```
 sudo apt-get install python3-pymysql
 ```
