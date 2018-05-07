@@ -7,7 +7,7 @@ from db_handling import DatabaseError, connect_database
 import datetime
 
 
-global_scan = {
+SCAN_STRUCTURE = {
     'date': None,
     'longitude': None,
     'counter': None,
@@ -25,10 +25,10 @@ def scan_info(longitude = None):
     connection = connect_database()
     curr = connection.cursor()
 
-    global_scan['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
-    global_scan['longitude'] = longitude
-    global_scan['counter'] = curr.execute("SELECT Count(*) FROM scandata").fetchall()[0][0]
-    global_scan['counter_not_null'] = curr.execute("SELECT Count(*) FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
+    SCAN_STRUCTURE['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
+    SCAN_STRUCTURE['longitude'] = longitude
+    SCAN_STRUCTURE['counter'] = curr.execute("SELECT Count(*) FROM scandata").fetchall()[0][0]
+    SCAN_STRUCTURE['counter_not_null'] = curr.execute("SELECT Count(*) FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
 
 def get_rendered_html():
     connection = connect_database()
@@ -41,27 +41,27 @@ def get_rendered_html():
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
 
     for scan in scandata_ids:
-        global_scan['id'] = scan[0]
-        global_scan['header'] = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['descr'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
-        global_scan['transport'] = curr.execute("SELECT transport FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['id'] = scan[0]
+        SCAN_STRUCTURE['header'] = curr.execute("SELECT header FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['descr'] = curr.execute("SELECT descr FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['status'] = curr.execute("SELECT status FROM scandata WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['filename'] = curr.execute("SELECT filename FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['requirements'] = curr.execute("SELECT requirement FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
+        SCAN_STRUCTURE['transport'] = curr.execute("SELECT transport FROM control WHERE id = ?", str(scan[0])).fetchone()[0]
         report_data.append(control_script_info(
-            filename = global_scan['filename'], 
-            header = global_scan['header'], 
-            script_id = global_scan['id'], 
-            descr = global_scan['descr'], 
-            requirement = global_scan['requirements'], 
-            status = global_scan['status'],
-            transport = global_scan['transport']))
+            filename = SCAN_STRUCTURE['filename'], 
+            header = SCAN_STRUCTURE['header'], 
+            script_id = SCAN_STRUCTURE['id'], 
+            descr = SCAN_STRUCTURE['descr'], 
+            requirement = SCAN_STRUCTURE['requirements'], 
+            status = SCAN_STRUCTURE['status'],
+            transport = SCAN_STRUCTURE['transport']))
 
     scan_data = basic_scan_info(
-        date = global_scan['date'], 
-        longitude = global_scan['longitude'], 
-        counter = global_scan['counter'], 
-        counter_not_null = global_scan['counter_not_null'])
+        date = SCAN_STRUCTURE['date'], 
+        longitude = SCAN_STRUCTURE['longitude'], 
+        counter = SCAN_STRUCTURE['counter'], 
+        counter_not_null = SCAN_STRUCTURE['counter_not_null'])
 
     env = Environment(
         loader = FileSystemLoader('templates'),
