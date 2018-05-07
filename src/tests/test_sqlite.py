@@ -12,15 +12,11 @@ def test_sqlite_object():
     assert isinstance(LOCAL_DB, sqlite_handle)
 
 def test_connect_database():
-    create_connection = connect_database()
-    is_obj_instance = isinstance(create_connection, sqlite3.Connection)
-    assert is_obj_instance
+    assert isinstance(connect_database(), sqlite3.Connection)
 
 # Check if we return list of parameters from json config
 def test_json_loader():
-    json_base = load_json()
-    is_obj_list = isinstance(json_base, list)
-    assert is_obj_list
+    assert isinstance(load_json(), list)
 
 def test_create_database():
     create_database = LOCAL_DB.create_db()
