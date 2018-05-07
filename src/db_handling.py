@@ -6,7 +6,6 @@ import sqlite3
 from pathlib import Path
 import os
 
-
 JSON_DB = None
 DB_CONTEST = 'configs/controls.json'
 DB_NAME = 'database.db'
