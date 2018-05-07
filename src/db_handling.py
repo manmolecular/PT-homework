@@ -51,21 +51,34 @@ def create_db():
     try:
         with connection:
             connection.execute('''
-                CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, header TEXT, descr TEXT, filename TEXT, requirement TEXT, transport TEXT)
+                CREATE TABLE IF NOT EXISTS control(id INTEGER PRIMARY KEY, 
+                    header TEXT, descr TEXT, filename TEXT, requirement TEXT, 
+                    transport TEXT)
                 ''')
             connection.execute('''
-                CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, status TEXT)
+                CREATE TABLE IF NOT EXISTS scandata(id INTEGER PRIMARY KEY, 
+                    status TEXT)
                 ''')
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
 
     controls = load_json()
-    
+
     for cur_control in controls:
         try:
             with connection:
-                connection.execute("INSERT OR REPLACE INTO control(id, header, descr, filename, requirement, transport) VALUES(?, ?, ?, ?, ?, ?)", 
-                    (cur_control[0], cur_control[1], cur_control[2], cur_control[3], cur_control[4], cur_control[5]))
+                connection.execute(
+                    "INSERT OR REPLACE INTO \
+                    control(id, header, descr, filename, requirement, \
+                    transport) VALUES(?, ?, ?, ?, ?, ?)", 
+                    (
+                        cur_control[0], 
+                        cur_control[1], 
+                        cur_control[2], 
+                        cur_control[3], 
+                        cur_control[4], 
+                        cur_control[5])
+                    )
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -78,7 +91,9 @@ def add_control(control_id, status):
     connection = connect_database()
     try:
         with connection:
-            connection.execute("INSERT OR REPLACE INTO scandata(id, status) VALUES(?, ?)", 
+            connection.execute(
+                "INSERT OR REPLACE INTO scandata \
+                (id, status) VALUES(?, ?)", 
                     (control_id, Status(status).name))
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
