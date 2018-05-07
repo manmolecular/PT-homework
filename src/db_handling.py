@@ -87,8 +87,6 @@ def create_db():
 
 
 def add_control(control_id, status):
-    if (1 > status) or (status > 5):
-        raise DatabaseError('wrong status')
     connection = connect_database()
     try:
         with connection:
