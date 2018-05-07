@@ -24,31 +24,20 @@ SCAN_STRUCTURE = {
 
 
 class control_script_info(NamedTuple):
-    filename:
-        str
-    header:
-        str
-    script_id:
-        int
-    descr:
-        str
-    requirement:
-        str
-    status:
-        str
-    transport:
-        str
+    filename: str
+    header: str
+    script_id: int
+    descr: str
+    requirement: str
+    status: str
+    transport: str
 
 
 class basic_scan_info(NamedTuple):
-    date:
-        str
-    longitude:
-        str
-    counter:
-        int
-    counter_not_null:
-        int
+    date: str
+    longitude: str
+    counter: int
+    counter_not_null: int
 
 
 def scan_info(longitude=None):
