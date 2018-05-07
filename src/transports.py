@@ -47,15 +47,15 @@ class MySQLtransport():
             raise TransportConnectionError(e) from e
 
     def sql_exec(self, sql_query, sql_data):
-        with self.connection.cursor() as cursor:
-            if sql_query:
+        if not sql_query:
+            return None
+        else:
+            with self.connection.cursor() as cursor:
                 try:
                     cursor.execute(sql_query, sql_data)
                     return cursor.fetchone()
                 except pymysql.MySQLError as e:
                     raise TransportError(e) from e
-            else:
-                return None
 
     def check_database_exist(self, database_name):
         with self.connection.cursor() as cursor:
