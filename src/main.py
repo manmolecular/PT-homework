@@ -15,7 +15,9 @@ LOCAL_DB = sqlite_handle()
 def import_scripts():
     script_dir = Path('.').joinpath(SCRIPT_DIR)
     for file in script_dir.glob('**/*.py'):
-        if file.name != '__init__.py':
+        if file.name == '__init__.py':
+            continue
+        else:
             status = importlib.import_module('.' + file.name[:-3], package = SCRIPT_DIR).main()
             script_id = int(file.name[0:3])
             LOCAL_DB.add_control(script_id, status)
