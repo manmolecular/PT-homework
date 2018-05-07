@@ -8,7 +8,7 @@ _transport_name = 'SSH'
 
 def main():
     try:
-        func_status = get_transport(_transport_name).is_exist(_file_name)
+        func_status = get_transport(_transport_name).get_file(_file_name)
     except TransportUnknown:
         return Status.STATUS_ERROR
     if func_status:
