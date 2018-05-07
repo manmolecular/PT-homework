@@ -3,7 +3,8 @@
 from enum import Enum
 import json
 import sqlite3
-import os.path
+from pathlib import Path
+
 
 JSON_DB = None
 DB_CONTEST = 'configs/controls.json'
@@ -32,15 +33,10 @@ def connect_database():
     return connection
 
 
-def get_full_path():
-    my_path = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(my_path, DB_CONTEST)
-
-
 def load_json():
     global JSON_DB
     if not JSON_DB:
-        with open(get_full_path(),'r') as f:
+        with Path('.').joinpath(DB_CONTEST).open() as f:
             JSON_DB = json.load(f)
     return JSON_DB
 
