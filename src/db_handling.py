@@ -4,6 +4,7 @@ from enum import Enum
 import json
 import sqlite3
 from pathlib import Path
+import os
 
 
 JSON_DB = None
@@ -40,8 +41,15 @@ def load_json():
             JSON_DB = json.load(f)
     return JSON_DB
 
-     
+
+def database_exist():
+    return os.path.isfile('./' + DB_NAME)
+
+
 def create_db():
+    if database_exist():
+        return
+        
     connection = connect_database()
 
     try:

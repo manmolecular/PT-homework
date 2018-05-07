@@ -8,7 +8,6 @@ import importlib
 import time
 import os
 
-_database = 'database.db'
 _scriptdir = 'scripts'
 
 # Import all scripts from folder
@@ -20,13 +19,9 @@ def import_scripts():
             script_id = int(file.name[0:3])
             add_control(script_id, status)
 
-def is_db_exist():
-    return os.path.isfile('./' + _database)
-
 def main():
     start_time = time.time()
-    if not is_db_exist():
-        create_db()
+    create_db()
     import_scripts()
     end_time = time.time() - start_time
     scan_info(end_time)
