@@ -5,9 +5,9 @@ import json
 import sqlite3
 import os.path
 
-_json_db = None
-_db_contest = 'configs/controls.json'
-_db_name = 'database.db'
+JSON_DB = None
+DB_CONTEST = 'configs/controls.json'
+DB_NAME = 'database.db'
 
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
@@ -23,21 +23,21 @@ class Status(Enum):
 
 def connect_database():
     try:
-        connection = sqlite3.connect(_db_name)
+        connection = sqlite3.connect(DB_NAME)
     except sqlite3.Error as e:
         raise DatabaseError(e.args[0])
     return connection
 
 def get_full_path():
     my_path = os.path.abspath(os.path.dirname(__file__))
-    return os.path.join(my_path, _db_contest)
+    return os.path.join(my_path, DB_CONTEST)
 
 def load_json():
-    global _json_db
-    if not _json_db:
+    global JSON_DB
+    if not JSON_DB:
         with open(get_full_path(),'r') as f:
-            _json_db = json.load(f)
-    return _json_db
+            JSON_DB = json.load(f)
+    return JSON_DB
      
 def create_db():
     connection = connect_database()
