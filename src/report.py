@@ -6,6 +6,7 @@ from weasyprint import HTML, CSS
 from db_handling import DatabaseError, connect_database
 import datetime
 
+
 global_scan = {
     'date': None,
     'longitude': None,
