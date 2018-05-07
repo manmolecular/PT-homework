@@ -118,9 +118,6 @@ class SSHtransport():
                 paramiko.SSHException, socket.error) as e:
             raise TransportConnectionError(e) from e
 
-    def __del__(self):
-        self.client.close()
-
     def exec(self, command=None):
         if not command:
             raise TransportError({'command': command})
@@ -135,7 +132,7 @@ class SSHtransport():
         sftp = self.client.open_sftp()
 
         try:
-            sftp.stat(file_remote)
+            sftp.stat(file_name)
         except paramiko.SSHException:
             raise TransportConnectionError('paramiko: SSHException')
         except IOError:
@@ -144,6 +141,9 @@ class SSHtransport():
         file = sftp.open(file_name, mode='r', bufsize=-1).read()
         sftp.close()
         return file
+
+    def __del__(self):
+        self.client.close()
 
 
 # Set default area of transport names
