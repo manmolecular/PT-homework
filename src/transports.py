@@ -139,28 +139,10 @@ class SSHtransport():
             raise TransportConnectionError('paramiko: SSHException')
         except IOError:
             raise TransportIOError('file doesnt exist')
-        sftp.get(file_remote, file_local)
+        file = sftp.open(file_name, mode='r', bufsize=-1).read()
         sftp.close()
-
-    def is_exist(self, file_name = None, remote_path = None, local_path = None):
-        file_name = file_name or _get_file_defaults['file_name']
-        remote_path = remote_path or _get_file_defaults['remote_path']
-        local_path = local_path or _get_file_defaults['local_path']
-
-        if not file_name:
-            raise TransportError({'file_name':file_name})
-        file_remote = remote_path + file_name
-        file_local = local_path + file_name
-        sftp = self.client.open_sftp()
-        try:
-            sftp.stat(file_remote)
-        except paramiko.SSHException:
-            raise TransportConnectionError('paramiko: SSHException')
-        except IOError:
-            sftp.close()
-            return False
-        sftp.close()
-        return True
+        return file
+        
 
 # Set default area of transport names
 global_transport_names = {
