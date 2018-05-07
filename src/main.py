@@ -11,6 +11,7 @@ import os
 SCRIPT_DIR = 'scripts'
 LOCAL_DB = sqlite_handle()
 
+
 # Import all scripts from folder
 def import_scripts():
     script_dir = Path('.').joinpath(SCRIPT_DIR)
@@ -18,9 +19,11 @@ def import_scripts():
         if file.name == '__init__.py':
             continue
         else:
-            status = importlib.import_module('.' + file.name[:-3], package = SCRIPT_DIR).main()
+            status = importlib.import_module('.' + file.name[:-3],
+                                             package=SCRIPT_DIR).main()
             script_id = int(file.name[0:3])
             LOCAL_DB.add_control(script_id, status)
+
 
 def main():
     start_time = time.time()
