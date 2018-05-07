@@ -17,13 +17,11 @@ _get_file_defaults = {
 # Classes for error handling
 class TransportError(Exception):
     def __init__(self, error_args):
-        Exception.__init__(self, 'TransportError {}'.format(error_args))
-        self.error_args = error_args
+        super().__init__(self, 'TransportError {}'.format(error_args))
 
 class TransportUnknown(Exception):
     def __init__(self, error_args):
-        TransportError.__init__(self, error_args)
-        self.error_args = error_args
+        Exception.__init__(self, 'TransportUnknown {}'.format(error_args))
 
 class TransportConnectionError(TransportError):
     def __init__(self, error_args):
@@ -142,7 +140,7 @@ class SSHtransport():
         file = sftp.open(file_name, mode='r', bufsize=-1).read()
         sftp.close()
         return file
-        
+
 
 # Set default area of transport names
 global_transport_names = {
