@@ -7,6 +7,7 @@ src/getme
 src/database.db
 src/sample_report.pdf
 src/ntest.py
+src/delete.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
