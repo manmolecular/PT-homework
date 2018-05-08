@@ -8,7 +8,8 @@ import os
 import datetime
 
 JSON_DB = None
-DB_CONTEST = 'configs/controls.json'
+DB_CONTEST = 'controls.json'
+DB_DIR = 'configs'
 DB_NAME = 'database.db'
 
 
@@ -29,7 +30,7 @@ class Status(Enum):
 def load_json():
     global JSON_DB
     if not JSON_DB:
-        with Path('.').joinpath(DB_CONTEST).open() as f:
+        with Path('.').joinpath(DB_DIR).joinpath(DB_CONTEST).open() as f:
             JSON_DB = json.load(f)
     return JSON_DB
 
