@@ -101,6 +101,8 @@ class sqlite_handle():
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
+    # Get all controls info from current system scan
+    # in one list
     def add_control(self, control_id, control_name, 
                     transport_name, control_status):
         current_control = (control_id, control_name, transport_name, str(Status(control_status).name))
@@ -112,6 +114,8 @@ class sqlite_handle():
 
         try:
             with self.connection:
+                # Save list of full scan controls
+                # by id of scanning.
                 self.connection.execute(
                     "INSERT OR REPLACE INTO scandata \
                     (id, scan_info) VALUES (?, ?)",

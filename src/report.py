@@ -38,8 +38,8 @@ class basic_scan_info(NamedTuple):
     curr_test: list
 
 # Get rendered html
-# Basic idea: we make scan of system and this scan is marked with id
-# (for example, 1). For this scan we put all of passed controls
+# Basic idea: we make scan of system and this scan is marked with 
+# some id (for example, 1). For this scan we put all of passed controls
 # in scandata table with _same_ id (for our example, 1). 
 
 # Scandata (id, list(info about every control))
@@ -57,10 +57,11 @@ def get_rendered_html():
     render_data = []
     scan_count = curr.execute("SELECT id FROM scansystem").fetchall()
 
-    # Look at all scans of our system from db 
+    # Look at all full scans of our system from db 
     for full_scan_id in scan_count:
         
-        # Find all controls that we test on current full scan of system
+        # Find all controls that we test on some full scan of system
+        # Parse string (TEXT field from db) -> list
         this_scan_controls = ast.literal_eval(
             curr.execute("SELECT * FROM scandata \
             WHERE id = ?", str(full_scan_id[0])).fetchone()[1])
@@ -68,7 +69,7 @@ def get_rendered_html():
         # List of info about every control from this sysscan
         list_of_controls_info = []
         
-        # For all controls from scan we retrieve all information
+        # For all controls from some full scan we retrieve all information
         for curr_control in this_scan_controls:
             from_db_info = curr.execute("SELECT * FROM control \
                 WHERE id = ?", [str(curr_control[0])]).fetchone()
@@ -92,8 +93,8 @@ def get_rendered_html():
         from_db_fullscan_info = curr.execute("SELECT * FROM scansystem \
             WHERE id = ?", str(full_scan_id[0])).fetchone()
 
-        # Get list of all data that we must render to pdf (controls info
-        # + sys info of scan)
+        # Get list of all data that we must render to pdf 
+        # (controls info + sys info of scan)
         render_data.append(basic_scan_info(
             scan_id=from_db_fullscan_info[0],
             date=from_db_fullscan_info[1],
