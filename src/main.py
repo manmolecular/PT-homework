@@ -19,9 +19,9 @@ def import_scripts():
         if file.name == '__init__.py':
             continue
         else:
-            status = importlib.import_module('.' + file.name[:-3],
+            status = importlib.import_module('.' + file.name[:-3], 
                                              package=SCRIPT_DIR).main()
-            script_id = int(file.name[0:3])
+            script_id = int(''.join(filter(str.isdigit, file.name)))
             LOCAL_DB.add_control(script_id, status)
 
 
