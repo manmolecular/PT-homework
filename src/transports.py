@@ -55,9 +55,11 @@ class MySQLtransport():
         except pymysql.MySQLError as e:
             raise TransportConnectionError(e) from e
 
-    def sql_exec(self, sql_query, sql_data):
+    def sql_exec(self, sql_query=None, sql_data=None):
         if not sql_query:
             return None
+        elif not sql_data:
+            raise TransportError({'sql_data without sql_query'})
         else:
             with self.connection.cursor() as cursor:
                 try:
@@ -66,7 +68,9 @@ class MySQLtransport():
                 except pymysql.MySQLError as e:
                     raise TransportError(e) from e
 
-    def check_database_exist(self, database_name):
+    def check_database_exist(self, database_name=None):
+        if not database_name:
+            raise TransportError({'database_name': database_name})
         with self.connection.cursor() as cursor:
             sql_query = 'SELECT SCHEMA_NAME FROM \
             INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = %s'
@@ -77,7 +81,9 @@ class MySQLtransport():
             else:
                 return False
 
-    def check_if_empty_table(self, table_name):
+    def check_if_empty_table(self, table_name=None):
+        if not table_name:
+            raise TransportError({'table_name': table_name})
         with self.connection.cursor() as cursor:
             cursor.execute('''
                 SELECT table_name
