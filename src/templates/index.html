@@ -16,33 +16,34 @@
          <h1 class="main-title">
             System summary
          </h1>
-         <h1 class="main-title">
-            Compliance summary
-         </h1>
          {% for sys in scan_data %}
-         <p> Test run number: {{sys.scan_id }}
-         <p> Date of scanning: {{ sys.date }} </p>
-         <p> Longitude of scanning: {{ sys.longitude }} </p>
-         <p> Number of tests in database: {{ sys.counter }} </p>
-         <p> Tests with not null statuses: {{ sys.counter_not_null }} </p>
-         {% endfor %}
-      </article>
-      <article class="A4">
-         <h1>
+         <h2 class="main-title">
+            Compliance summary
+         </h2>
+         Test run number: {{sys.scan_id }} <br>
+         Date of scanning: {{ sys.date }} <br>
+         Longitude of scanning: {{ sys.longitude }} <br>
+         Number of tests in database: {{ sys.counter }} <br>
+         Tests with not null statuses: {{ sys.counter_not_null }} <br>
+
+         <article class="A4">
+         <h2>
             Passed controls
-         </h1>
+         </h2>
          {% for record in report_data %}
          <article>
-            <h3> {{ record.header }} </h3>
-            <h4> Control id is: {{ record.script_id }} </h4>
-            <p> Check for file named "{{ record.filename }}" </p>
-            <p> Requirements: {{ record.requirement }} </p>
-            <p> Transport: {{ record.transport}} </p>
-            <p> Status: <span class="{{ record.status }}">{{ record.status }}</span></p>
+            <h4> Control name: {{ record.header }} </h4>
+            Control id: {{ record.script_id }} <br>
+            Check for file: "{{ record.filename }}" <br>
+            Requirements: {{ record.requirement }} <br>
+            Transport: {{ record.transport}} <br>
+            Status: <span class="{{ record.status }}"> {{ record.status }} </span> <br>
             <p>
                Description:
                {{ record.descr }}
             </p>
+         </article>
+         {% endfor %}
          </article>
          {% endfor %}
       </article>
