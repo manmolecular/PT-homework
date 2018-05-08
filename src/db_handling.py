@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # Create and manage database
 from enum import Enum
+from pathlib import Path
 import json
 import sqlite3
-from pathlib import Path
-import os
 import datetime
 
 JSON_DB = None
