@@ -1,6 +1,5 @@
 [
   ["000", "File named 'testfile' is present in the root folder on target system.", "testfile", "file must be in folder"],
-  ["001", "description-1", "filename-1", "requirement-1"],
-  ["010", "description-2", "filename-2", "requirement-2"],
-  ["100", "description-3", "filename-3", "requirement-3"]
+  ["001", "File named 'unknown' doesn't exists in the root folder on target system", "unknown", "file not exists"],
+  ["002", "Wrong transport for get file", "testfile", "Transport is wrong"]
 ]
