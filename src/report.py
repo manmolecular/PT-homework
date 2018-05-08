@@ -43,15 +43,6 @@ def get_rendered_html():
     report_data = []
     scandata_ids = curr.execute("SELECT id FROM scandata").fetchall()
 
-    # print(curr.execute("SELECT * FROM control WHERE id = ?", ['10']).fetchone())
-    # print(curr.execute("SELECT * FROM control WHERE id = ?", str(100)).fetchone())
-
-    # print(scandata_ids)
-    # for scan in scandata_ids:
-    #     print(scan[0])
-    #     print(curr.execute("SELECT * FROM control \
-    #         WHERE id = ?", [str(scan[0])]).fetchone())
-
     for scan in scandata_ids:
         from_control = curr.execute("SELECT * FROM control \
             WHERE id = ?", [str(scan[0])]).fetchone()
