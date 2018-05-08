@@ -3,6 +3,7 @@
 from db_handling import connect_database, load_json, \
 DatabaseError, sqlite_handle, Status
 import sqlite3
+import ast
 import pytest
 
 LOCAL_DB = sqlite_handle()
@@ -31,10 +32,11 @@ def test_create_database():
 def test_add_control_good():
     connection = connect_database()
     with connection:
-        for i in range(1,5):
-            control_func = LOCAL_DB.add_control(0, 'name', 'transport', i)
-            value_from_db = connection.execute('SELECT status \
-                FROM scandata WHERE id = 0').fetchone()[0]
-            value_from_enum = Status(i).name
-            assert (value_from_db == value_from_enum)
+        control_func = LOCAL_DB.add_control(0, 'name', 'transport', 1)
+        LOCAL_DB.add_scan_info(1337)
+        value_from_db = ast.literal_eval(
+            connection.execute("SELECT * FROM scandata \
+            WHERE id = ?", str(1)).fetchone()[1])[0][3]
+        value_from_enum = Status(1).name
+        assert (value_from_db == value_from_enum)
     connection.close()
