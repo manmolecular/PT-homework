@@ -10,7 +10,7 @@ JSON_DB = None
 DB_CONTEST = 'controls.json'
 DB_DIR = 'configs'
 DB_NAME = 'database.db'
-
+CURRENT_SCAN = []
 
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
@@ -67,9 +67,7 @@ class sqlite_handle():
                     CREATE TABLE IF NOT EXISTS
                     scandata(
                         id INTEGER PRIMARY KEY,
-                        header TEXT,
-                        transport TEXT,
-                        status TEXT)
+                        scan_info TEXT)
                     '''
                     )
                 self.connection.execute(
@@ -105,15 +103,8 @@ class sqlite_handle():
 
     def add_control(self, control_id, control_name, 
                     transport_name, control_status):
-        try:
-            with self.connection:
-                self.connection.execute(
-                    "INSERT OR REPLACE INTO scandata \
-                    (id, header, transport, status) VALUES(?, ?, ?, ?)",
-                    (control_id, control_name, transport_name,
-                    Status(control_status).name))
-        except sqlite3.Error as e:
-            raise DatabaseError(e.args[0])
+        current_control = (control_id, control_name, transport_name, str(Status(control_status).name))
+        CURRENT_SCAN.append(current_control)
 
     def add_scan_info(self, longitude):
         scan_date = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -121,10 +112,17 @@ class sqlite_handle():
 
         try:
             with self.connection:
-                tests_count = self.connection.execute("SELECT Count(*) FROM \
-                    scandata").fetchall()[0][0]
-                tests_count_not_null = self.connection.execute("SELECT Count(*) \
-                    FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
+                self.connection.execute(
+                    "INSERT OR REPLACE INTO scandata \
+                    (id, scan_info) VALUES (?, ?)",
+                    (None, str(CURRENT_SCAN)))
+
+                tests_count = len(CURRENT_SCAN)
+                tests_count_not_null = 0
+                for status in CURRENT_SCAN:
+                    if status[3]:
+                        tests_count_not_null+=1
+
                 self.connection.execute(
                     "INSERT OR REPLACE INTO scansystem \
                     (scan_date, longitude, tests_count, status_not_null)\
