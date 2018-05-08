@@ -3,13 +3,13 @@
 from transports import get_transport, SSHtransport, TransportUnknown
 from db_handling import Status
 
-_file_name = 'testfile'
-_transport_name = 'SSH'
+FILE_NAME = 'testfile'
+TRANSPORT = 'SSH'
 
 
 def main():
     try:
-        func_status = get_transport(_transport_name).get_file(_file_name)
+        func_status = get_transport(TRANSPORT).get_file(FILE_NAME)
     except TransportUnknown:
         return Status.STATUS_ERROR
     if func_status:
