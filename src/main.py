@@ -6,7 +6,6 @@ from db_handling import sqlite_handle
 from report import make_report
 import importlib
 import time
-import os
 
 SCRIPT_DIR = 'scripts'
 LOCAL_DB = sqlite_handle()
