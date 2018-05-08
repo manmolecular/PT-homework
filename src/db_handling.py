@@ -53,15 +53,16 @@ class sqlite_handle():
             with self.connection:
                 self.connection.execute(
                     '''
-                    CREATE TABLE IF NOT EXISTS control(id INTEGER
-                    PRIMARY KEY, header TEXT, descr TEXT,
-                    filename TEXT, requirement TEXT, transport TEXT)
+                    CREATE TABLE IF NOT EXISTS 
+                    control(id INTEGER PRIMARY KEY, descr TEXT,
+                    filename TEXT, requirement TEXT)
                     '''
                     )
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS
-                    scandata(id INTEGER PRIMARY KEY, status TEXT)
+                    scandata(id INTEGER PRIMARY KEY, header TEXT,
+                    transport TEXT, status TEXT)
                     '''
                     )
         except sqlite3.Error as e:
@@ -74,26 +75,26 @@ class sqlite_handle():
                 for cur_control in controls:
                     self.connection.execute(
                         "INSERT OR REPLACE INTO \
-                        control(id, header, descr, filename, requirement, \
-                        transport) VALUES(?, ?, ?, ?, ?, ?)",
+                        control(id, descr, filename, requirement) \
+                        VALUES(?, ?, ?, ?)",
                         (
                             cur_control[0],
                             cur_control[1],
                             cur_control[2],
-                            cur_control[3],
-                            cur_control[4],
-                            cur_control[5])
-                        )
+                            cur_control[3]
+                        ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
-    def add_control(self, control_id, status):
+    def add_control(self, control_id, control_name, 
+                    transport_name, control_status):
         try:
             with self.connection:
                 self.connection.execute(
                     "INSERT OR REPLACE INTO scandata \
-                    (id, status) VALUES(?, ?)",
-                    (control_id, Status(status).name))
+                    (id, header, transport, status) VALUES(?, ?, ?, ?)",
+                    (control_id, control_name, transport_name,
+                    Status(control_status).name))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 

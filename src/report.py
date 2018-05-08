@@ -62,16 +62,16 @@ def get_rendered_html():
     for scan in scandata_ids:
         from_control = curr.execute("SELECT * FROM control \
             WHERE id = ?", str(scan[0])).fetchone()
-        scandata_status = curr.execute("SELECT status FROM \
-            scandata WHERE id = ?", str(scan[0])).fetchone()[0]
+        from_scandata = curr.execute("SELECT * FROM \
+            scandata WHERE id = ?", str(scan[0])).fetchone()
 
-        SCAN_STRUCTURE['id'] = from_control[0]
-        SCAN_STRUCTURE['header'] = from_control[1]
-        SCAN_STRUCTURE['descr'] = from_control[2]
-        SCAN_STRUCTURE['status'] = scandata_status
-        SCAN_STRUCTURE['filename'] = from_control[3]
-        SCAN_STRUCTURE['requirements'] = from_control[4]
-        SCAN_STRUCTURE['transport'] = from_control[5]
+        SCAN_STRUCTURE['id'] = from_scandata[0]
+        SCAN_STRUCTURE['header'] = from_scandata[1]
+        SCAN_STRUCTURE['descr'] = from_control[1]
+        SCAN_STRUCTURE['status'] = from_scandata[3]
+        SCAN_STRUCTURE['filename'] = from_control[2]
+        SCAN_STRUCTURE['requirements'] = from_control[3]
+        SCAN_STRUCTURE['transport'] = from_scandata[2]
         report_data.append(control_script_info(
             filename=SCAN_STRUCTURE['filename'],
             header=SCAN_STRUCTURE['header'],
