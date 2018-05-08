@@ -30,7 +30,7 @@
          <h2>
             Passed controls
          </h2>
-         {% for record in report_data %}
+         {% for record in sys.curr_test %}
          <article>
             <h4> Control name: {{ record.header }} </h4>
             Control id: {{ record.script_id }} <br>
