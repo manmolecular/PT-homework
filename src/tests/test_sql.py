@@ -32,8 +32,10 @@ def prepare_base():
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
                     AUTO_INCREMENT=1 ;''')
 
-        sql = "INSERT IGNORE INTO `users` (`email`, `password`) VALUES (%s, %s)"
-        connection.cursor().execute(sql, ('webmaster@python.org', 'very-secret'))
+        sql = "INSERT IGNORE INTO `users` (`email`, `password`) \
+            VALUES (%s, %s)"
+        connection.cursor().execute(sql, ('webmaster@python.org', \
+            'very-secret'))
 
     connection.close()
 
@@ -95,12 +97,18 @@ def test_get_transport():
 
 def test_exec():
     prepare_base()
-    result = get_transport('SQL').sql_exec("SELECT `id`, `password` FROM `users` WHERE `email`=%s", sql_data)
+    result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
+        FROM `users` WHERE `email`=%s", sql_data)
     assert isinstance(result, dict)
 
 def test_empty_exec():
     result = get_transport('SQL').sql_exec("", "")
     assert result is None
+
+def test_empty_data_exec():
+    with pytest.raises(TransportError):
+        result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
+            FROM `users` WHERE `email`=%s", "")
 
 def test_not_empty_table():
     result = get_transport('SQL').check_if_empty_table('users')
