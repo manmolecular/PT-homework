@@ -5,14 +5,18 @@ from db_handling import Status
 
 FILE_NAME = 'testfile'
 TRANSPORT = 'SSH'
-
+INFO_COL = []
 
 def main():
     try:
-        func_status = get_transport(TRANSPORT).get_file(FILE_NAME)
+        transport_instance = get_transport(TRANSPORT)
+        func_status = transport_instance.get_file(FILE_NAME)
+        transport_name = transport_instance.__class__.__name__
+        INFO_COL.append(transport_name)
     except TransportUnknown:
-        return Status.STATUS_ERROR
+        return [TRANSPORT, Status.STATUS_ERROR]
     if func_status:
-        return Status.STATUS_COMPLIANT
+        INFO_COL.append(Status.STATUS_COMPLIANT)
     else:
-        return Status.STATUS_NOT_COMPLIANT
+        INFO_COL.append(Status.STATUS_NOT_COMPLIANT)
+    return INFO_COL
