@@ -31,7 +31,7 @@ def test_add_control_good():
     connection = connect_database()
     with connection:
         for i in range(1,5):
-            control_func = LOCAL_DB.add_control(0, i)
+            control_func = LOCAL_DB.add_control(0, 'name', 'transport', i)
             value_from_db = connection.execute('SELECT status FROM scandata WHERE id = 0').fetchone()[0]
             value_from_enum = Status(i).name
             assert (value_from_db == value_from_enum)
