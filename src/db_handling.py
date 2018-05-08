@@ -5,6 +5,7 @@ import json
 import sqlite3
 from pathlib import Path
 import os
+import datetime
 
 JSON_DB = None
 DB_CONTEST = 'configs/controls.json'
@@ -54,17 +55,33 @@ class sqlite_handle():
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS 
-                    control(id INTEGER PRIMARY KEY, descr TEXT,
-                    filename TEXT, requirement TEXT)
+                    control(
+                        id INTEGER PRIMARY KEY,
+                        descr TEXT,
+                        filename TEXT,
+                        requirement TEXT)
                     '''
                     )
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS
-                    scandata(id INTEGER PRIMARY KEY, header TEXT,
-                    transport TEXT, status TEXT)
+                    scandata(
+                        id INTEGER PRIMARY KEY,
+                        header TEXT,
+                        transport TEXT,
+                        status TEXT)
                     '''
                     )
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    scansystem(
+                        id INTEGER PRIMARY KEY,
+                        scan_date TEXT,
+                        longitude TEXT,
+                        tests_count INTEGER,
+                        status_not_null INTEGER)
+                    ''')
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -95,6 +112,25 @@ class sqlite_handle():
                     (id, header, transport, status) VALUES(?, ?, ?, ?)",
                     (control_id, control_name, transport_name,
                     Status(control_status).name))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
+
+    def add_scan_info(self, longitude):
+        scan_date = datetime.datetime.today().strftime('%Y-%m-%d')
+        scan_longitude = longitude
+
+        try:
+            with self.connection:
+                tests_count = self.connection.execute("SELECT Count(*) FROM \
+                    scandata").fetchall()[0][0]
+                tests_count_not_null = self.connection.execute("SELECT Count(*) \
+                    FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
+                self.connection.execute(
+                    "INSERT OR REPLACE INTO scansystem \
+                    (scan_date, longitude, tests_count, status_not_null)\
+                    VALUES (?, ?, ?, ?)",
+                    (scan_date, scan_longitude, 
+                    tests_count, tests_count_not_null))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 

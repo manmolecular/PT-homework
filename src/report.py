@@ -6,20 +6,15 @@ from collections import namedtuple
 from weasyprint import HTML, CSS
 from db_handling import DatabaseError, connect_database
 from typing import NamedTuple
-import datetime
 
 SCAN_STRUCTURE = {
-    'date': None,
-    'longitude': None,
-    'counter': None,
-    'counter_not_null': None,
     'id': None,
     'header': None,
     'descr': None,
     'status': None,
     'filename': None,
     'requirements': None,
-    'transport': None
+    'transport': None,
 }
 
 
@@ -34,22 +29,11 @@ class control_script_info(NamedTuple):
 
 
 class basic_scan_info(NamedTuple):
+    scan_id: int
     date: str
     longitude: str
     counter: int
     counter_not_null: int
-
-
-def scan_info(longitude=None):
-    connection = connect_database()
-    curr = connection.cursor()
-
-    SCAN_STRUCTURE['date'] = datetime.datetime.today().strftime('%Y-%m-%d')
-    SCAN_STRUCTURE['longitude'] = longitude
-    SCAN_STRUCTURE['counter'] = curr.execute("SELECT Count(*) FROM \
-        scandata").fetchall()[0][0]
-    SCAN_STRUCTURE['counter_not_null'] = curr.execute("SELECT Count(*) \
-        FROM scandata WHERE status IS NOT NULL").fetchall()[0][0]
 
 
 def get_rendered_html():
@@ -81,11 +65,17 @@ def get_rendered_html():
             status=SCAN_STRUCTURE['status'],
             transport=SCAN_STRUCTURE['transport']))
 
-    scan_data = basic_scan_info(
-        date=SCAN_STRUCTURE['date'],
-        longitude=SCAN_STRUCTURE['longitude'],
-        counter=SCAN_STRUCTURE['counter'],
-        counter_not_null=SCAN_STRUCTURE['counter_not_null'])
+    system_data = []
+    system_ids = curr.execute("SELECT id FROM scansystem").fetchall()
+    for sys in system_ids:
+        from_scansystem = curr.execute("SELECT * FROM scansystem \
+            WHERE id = ?", str(sys[0])).fetchone()
+        system_data.append(basic_scan_info(
+            scan_id=from_scansystem[0],
+            date=from_scansystem[1],
+            longitude=from_scansystem[2],
+            counter=from_scansystem[3],
+            counter_not_null=from_scansystem[4]))
 
     env = Environment(
         loader=FileSystemLoader('templates'),
@@ -95,7 +85,7 @@ def get_rendered_html():
     template = env.get_template('index.html')
     return template.render(
         report_data=report_data,
-        scan_data=scan_data)
+        scan_data=system_data)
 
 
 def make_report():

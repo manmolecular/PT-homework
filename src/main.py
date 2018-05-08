@@ -3,7 +3,7 @@
 from pathlib import Path
 from transports import SSHtransport
 from db_handling import sqlite_handle
-from report import scan_info, make_report
+from report import make_report
 import importlib
 import time
 import os
@@ -30,8 +30,8 @@ def main():
     start_time = time.time()
     LOCAL_DB.create_db()
     import_scripts()
-    end_time = time.time() - start_time
-    scan_info(end_time)
+    longitude = time.time() - start_time
+    LOCAL_DB.add_scan_info(longitude)
     make_report()
 
 if __name__ == "__main__":
