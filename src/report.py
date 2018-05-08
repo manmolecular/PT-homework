@@ -77,6 +77,8 @@ def get_rendered_html():
             counter=from_scansystem[3],
             counter_not_null=from_scansystem[4]))
 
+    connection.close()
+
     env = Environment(
         loader=FileSystemLoader('templates'),
         autoescape=select_autoescape(['html', 'xml'])
