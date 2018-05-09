@@ -4,6 +4,7 @@ from pathlib import Path
 from transports import SSHtransport
 from db_handling import sqlite_handle
 from report import make_report
+from time import gmtime, strftime
 import importlib
 import time
 
@@ -26,11 +27,15 @@ def import_scripts():
 
 
 def main():
-    start_time = time.time()
+    start_time = strftime("%H:%M:%S", gmtime())
+    start_time_diff = time.time()
     LOCAL_DB.create_db()
+    LOCAL_DB.initial_scan()
     import_scripts()
-    longitude = time.time() - start_time
-    LOCAL_DB.add_scan_info(longitude)
+    end_time = strftime("%H:%M:%S", gmtime())
+    end_time_diff = time.time()
+    duration = end_time_diff - start_time_diff
+    LOCAL_DB.add_time(start_time, end_time, duration)
     make_report()
 
 if __name__ == "__main__":
