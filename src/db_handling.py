@@ -6,7 +6,7 @@ import json
 import sqlite3
 import datetime
 
-JSON_DB = None
+json_db = None
 DB_CONTEST = 'controls.json'
 DB_DIR = 'configs'
 DB_NAME = 'database.db'
@@ -26,11 +26,11 @@ class Status(Enum):
 
 
 def load_json():
-    global JSON_DB
-    if not JSON_DB:
+    global json_db
+    if not json_db:
         with Path('.').joinpath(DB_DIR).joinpath(DB_CONTEST).open() as f:
-            JSON_DB = json.load(f)
-    return JSON_DB
+            json_db = json.load(f)
+    return json_db
 
 
 def connect_database():
