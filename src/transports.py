@@ -16,7 +16,7 @@ class TransportError(Exception):
         self.error_args=error_args
 
     def __str__(self):
-        return (self.error_args)
+        return str(self.error_args)
 
 
 class TransportUnknown(Exception):
@@ -26,7 +26,7 @@ class TransportUnknown(Exception):
             self.error_args=error_args
 
         def __str__(self):
-            return (self.error_args)
+            return str(self.error_args)
 
 
 class TransportConnectionError(TransportError):
