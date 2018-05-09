@@ -1,4 +1,4 @@
-# Structure  
+# Structure
 ## Introduction
 Project based on Positive Technologies Python lectures
 
@@ -55,6 +55,11 @@ PT-exercises/src
 
 # Notes  
 ## Requirements  
+Requirements:
+- [Docker](https://docs.docker.com/)
+- [Docker-compose](https://docs.docker.com/compose/)
+- Python 3+
+  
 Basically you need just latest python3 (*for example 3.6.5 was used in development of this project*) and pip modules installed from `requirements.txt` file
 
 ## Getting start
@@ -83,7 +88,7 @@ To test PyMySQL with pytest you need to install `python3-pymysql` package
 sudo apt-get install python3-pymysql
 ```
 
-# Russian README
+# Russian
 ## Структура репозитория  
 - `configs` - конфигурационные *.json* файлы, отвечающие за конфигурацию транспортов по умолчанию в случае использования docker-контейнеров из репозитория (`config.json`) и описание базовых контролей (`controls.json`)
 - `controls` - импортируемые в основной модуль скрипты-контроли, отвечающие за основную функциональную составляющую проверок
@@ -99,6 +104,14 @@ sudo apt-get install python3-pymysql
 
 ## Как работать с проектом
 ### Зависимости
+Необходимо:
+- python 3+
+- pip
+- python3-pymysql
+  
+Опционально:
+- pyenv
+  
 Для работы с проектом предпочтительно использование `pyenv` с python версии `3.6.5` или новее. Все необходимые pip-зависимости указаны в файле `requirements.txt`, который находится в корне репозитория.  
   
 Также для корректной работы тестов необходимо установить пакет `python3-pymysql`:
@@ -107,6 +120,10 @@ sudo apt-get install python3-pymysql
 ```
 
 ### Сборка
+Требования к сборке:
+- [Docker](https://docs.docker.com/)
+- [Docker-compose](https://docs.docker.com/compose/)
+  
 Для начала работы следует собрать и запустить docker-контейнеры из репозитория - для упрощения этого процесса в корневой директории содержится `docker-compose` конфигурационный файл. Для запуска и сборки всех необходимых инструментов, следует запустить из директории с файлом следующую команду:
 ```
 docker-compose up
@@ -123,10 +140,10 @@ docker-compose up
 000_some_name.py
 ```
 
-Где `000` - это id проверки, а `some_name` - произвольное имя проверки. Все функции контроля должны быть вызваны из главной функции `main()`, которая импортируется главным функциональным модулем приложения.
+Где `000` - это id проверки, а `some_name` - произвольное имя проверки. Все функции контроля должны быть вызваны из главной функции `main()`, которая импортируется главным функциональным модулем приложения, также функция `main()` контроля должна возвращать значение-статус контроля.
 *Замечание: количество цифр в названии не имеет значения - любой другой числовой формат будет распознан. Имя может не содержать в себе `_`, но следование общему формату тестов контролей желательно.*
 
-Также следует добавить `id` и описание проверки `descr` в файл `controls.json`, располагающийся в директории `configs`
+Также следует добавить `id` и описание проверки `descr` в файл `controls.json`, располагающийся в директории `configs`, для сборки полного отчета.
 
 ### Тестирование
 Для запуска тестов следует запустить следующую команду из директории `src/`:
