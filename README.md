@@ -1,7 +1,7 @@
-# Structure
-## Introduction
-Project based on Positive Technologies Python lectures
+# About
+Project based on Positive Technologies Python lectures  
 
+# Structure
 ## Code structure tree
 ```
 PT-exercises/src
