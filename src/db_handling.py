@@ -46,11 +46,8 @@ def connect_database():
 
 class sqlite_handle():
     def __init__(self):
-        try:
-            self.connection = sqlite3.connect(DB_NAME)
-            self.connection.execute("PRAGMA foreign_keys = ON")
-        except sqlite3.Error as e:
-            raise DatabaseError(e.args[0])
+        self.connection = connect_database()
+        self.connection.execute("PRAGMA foreign_keys = ON")
 
     def create_db(self):
         try:
