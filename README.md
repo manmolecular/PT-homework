@@ -69,7 +69,7 @@ docker-compose up
 ```
 
 ## Run
-From `src/
+From `src/`:
 ```
 ./main.py
 ```
@@ -82,14 +82,14 @@ ssh root@localhost -p 22022
 ```
 
 ## Pytest
-*Note: run tests from `src/` dir, because modules using relative paths.
-From `src/`
+*Note: run tests from `src/` dir, because modules using relative paths.*  
+From `src/`:
 ```
 pytest
 ```
 
 ## PyMySQL + Pytest
-To test PyMySQL with pytest you need to install `python3-pymysql` package
+To test PyMySQL with pytest you need to install `python3-pymysql` package:
 ```
 sudo apt-get install python3-pymysql
 ```
