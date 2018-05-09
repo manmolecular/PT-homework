@@ -57,7 +57,7 @@ PT-exercises/src
 Basically you need just latest python3 (*for example 3.6.5 was used in development of this project*) and pip modules installed from `requirements.txt` file
 
 ## Getting start
-First you need to build and start docker with ssh and mariadb from `src/` folder:  
+First you need to build and start docker with ssh and mariadb from root dir of repo:  
 ```
 docker-compose up
 ```
@@ -106,7 +106,7 @@ sudo apt-get install python3-pymysql
 ```
 
 ### Сборка
-Для начала следует собрать и запустить docker-контейнеры - для упрощения этого процесса в директории `src/` имеется `docker-compose` конфигурационный файл. Для запуска и сборки всех необходимых инструментов, следует запустить из директории `src/` следующую команду:
+Для начала следует собрать и запустить docker-контейнеры - для упрощения этого процесса в корневой директории имеется `docker-compose` конфигурационный файл. Для запуска и сборки всех необходимых инструментов, следует запустить из директории с файлом следующую команду:
 ```
 docker-compose up
 ```
