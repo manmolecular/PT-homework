@@ -32,11 +32,11 @@ def test_create_database():
 def test_add_control_good():
     connection = connect_database()
     with connection:
-        control_func = LOCAL_DB.add_control(0, 'name', 'transport', 1)
+        control_func = LOCAL_DB.add_control(0, 'name', 'transport', 5)
         LOCAL_DB.add_scan_info(1337)
         value_from_db = ast.literal_eval(
             connection.execute("SELECT * FROM scandata \
-            WHERE id = ?", str(1)).fetchone()[1])[0][3]
-        value_from_enum = Status(1).name
+            WHERE id = (SELECT MAX(ID) FROM scandata)").fetchone()[1])[0][3]
+        value_from_enum = Status(5).name
         assert (value_from_db == value_from_enum)
     connection.close()
