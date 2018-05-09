@@ -18,12 +18,11 @@ def import_scripts():
     for file in script_dir.glob('**/*.py'):
         if file.name == '__init__.py':
             continue
-        else:
-            script_id = int(''.join(filter(str.isdigit, file.name)))
-            script_name = file.name[:-3]
-            status = importlib.import_module('.' + script_name, 
-                                             package=SCRIPT_DIR).main()
-            LOCAL_DB.add_control(script_id, script_name, status[0], status[1])
+        script_id = int(''.join(filter(str.isdigit, file.name)))
+        script_name = file.name[:-3]
+        status = importlib.import_module('.' + script_name, 
+                                         package=SCRIPT_DIR).main()
+        LOCAL_DB.add_control(script_id, script_name, status[0], status[1])
 
 
 def main():
