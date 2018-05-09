@@ -8,16 +8,6 @@ from db_handling import DatabaseError, connect_database
 from typing import NamedTuple
 import ast
 
-SCAN_STRUCTURE = {
-    'id': None,
-    'header': None,
-    'descr': None,
-    'status': None,
-    'filename': None,
-    'requirements': None,
-    'transport': None,
-}
-
 
 class control_info(NamedTuple):
     contrid: int
