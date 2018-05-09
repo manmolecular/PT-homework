@@ -6,7 +6,7 @@ import pymysql
 import pytest
 
 SQLdefaults = get_defaults('SQL')
-sql_data = 'webmaster@python.org'
+SQL_DATA = 'webmaster@python.org'
 
 def prepare_base():
     connection = pymysql.connect(host = 'localhost', 
@@ -98,7 +98,7 @@ def test_get_transport():
 def test_exec():
     prepare_base()
     result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
-        FROM `users` WHERE `email`=%s", sql_data)
+        FROM `users` WHERE `email`=%s", SQL_DATA)
     assert isinstance(result, dict)
 
 def test_empty_exec():
