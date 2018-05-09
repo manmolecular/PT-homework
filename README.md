@@ -70,13 +70,11 @@ ssh root@localhost -p 22022
 ```
 
 ## Pytest
-*Note: run tests only from `src/` dir, because modules using relative paths from `src/`*
+*Note: run tests only from `src/` dir, because modules using relative paths from `src/`*  
 From `src/`
 ```
 pytest
 ```
-
-It's important: it's better to remove old database before tests
 
 ## PyMySQL + Pytest
 To test PyMySQL with pytest you need to install `python3-pymysql` package
@@ -135,6 +133,4 @@ docker-compose up
 pytest
 ```
 
-*Важно: то, откуда будет запущена команда `pytest` имеет значение по причине относительных путей в проекте. Поэтому, следует запускать `pytest` именно из директории `src/`*  
-
-Перед тестированием желательно удалить старую базу данных, также как и перед запуском основного модуля (т.к. между ними теоретически возможны конфликты)
+*Важно: то, откуда будет запущена команда `pytest`, имеет значение по причине относительных путей в проекте. Поэтому, следует запускать `pytest` именно из директории `src/`*  
