@@ -37,6 +37,7 @@ def main():
     duration = end_time_diff - start_time_diff
     LOCAL_DB.add_time(start_time, end_time, duration)
     make_report()
+    LOCAL_DB.close()
 
 if __name__ == "__main__":
     main()

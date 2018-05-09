@@ -171,5 +171,8 @@ class sqlite_handle():
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
-    def __del__(self):
+    def close(self):
         self.connection.close()
+    
+    def __del__(self):
+        self.close()
