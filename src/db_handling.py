@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Create and manage database
 from enum import Enum
-from pathlib import Path
+from pathlib import PurePosixPath, Path
 import json
 import sqlite3
 import datetime
@@ -31,7 +31,7 @@ class Status(Enum):
 def load_json():
     global json_db
     if not json_db:
-        with Path('.').joinpath(DB_DIR).joinpath(DB_CONTEST).open() as f:
+        with Path(PurePosixPath('.').joinpath(DB_DIR, DB_CONTEST)).open() as f:
             json_db = json.load(f)
     return json_db
 
