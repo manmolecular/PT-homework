@@ -10,7 +10,6 @@ JSON_DB = None
 DB_CONTEST = 'controls.json'
 DB_DIR = 'configs'
 DB_NAME = 'database.db'
-CURRENT_SCAN = []
 
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
@@ -46,6 +45,7 @@ class sqlite_handle():
     def __init__(self):
         try:
             self.connection = sqlite3.connect(DB_NAME)
+            self.connection.execute("PRAGMA foreign_keys = ON")
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -56,8 +56,8 @@ class sqlite_handle():
                     '''
                     CREATE TABLE IF NOT EXISTS 
                     control(
-                        id INTEGER PRIMARY KEY,
-                        descr TEXT,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        description TEXT,
                         filename TEXT,
                         requirement TEXT)
                     '''
@@ -66,19 +66,28 @@ class sqlite_handle():
                     '''
                     CREATE TABLE IF NOT EXISTS
                     scandata(
-                        id INTEGER PRIMARY KEY,
-                        scan_info TEXT)
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name TEXT,
+                        transport TEXT,
+                        status TEXT,
+                        scansystem_id INTEGER,
+                        control_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id),
+                        FOREIGN KEY (control_id) REFERENCES control(id))
                     '''
                     )
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS
                     scansystem(
-                        id INTEGER PRIMARY KEY,
-                        scan_date TEXT,
-                        longitude TEXT,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        scandate TEXT,
+                        start_time TEXT,
+                        end_time TEXT,
+                        duration TEXT,
                         tests_count INTEGER,
-                        status_not_null INTEGER)
+                        not_null_status INTEGER)
                     ''')
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
@@ -90,7 +99,7 @@ class sqlite_handle():
                 for cur_control in controls:
                     self.connection.execute(
                         "INSERT OR REPLACE INTO \
-                        control(id, descr, filename, requirement) \
+                        control(id, description, filename, requirement) \
                         VALUES(?, ?, ?, ?)",
                         (
                             cur_control[0],
@@ -101,38 +110,64 @@ class sqlite_handle():
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
-    # Get all controls info from current system scan
-    # in one list
     def add_control(self, control_id, control_name, 
                     transport_name, control_status):
-        current_control = (control_id, control_name, transport_name, str(Status(control_status).name))
-        CURRENT_SCAN.append(current_control)
-
-    def add_scan_info(self, longitude):
-        scan_date = datetime.datetime.today().strftime('%Y-%m-%d')
-        scan_longitude = longitude
-
         try:
             with self.connection:
-                # Save list of full scan controls
-                # by id of scanning.
                 self.connection.execute(
-                    "INSERT OR REPLACE INTO scandata \
-                    (id, scan_info) VALUES (?, ?)",
-                    (None, str(CURRENT_SCAN)))
+                    "INSERT OR REPLACE INTO \
+                    scandata(name, transport, status, scansystem_id, control_id) \
+                    VALUES (?, ?, ?, ?, ?)",
+                    (
+                        control_name,
+                        transport_name,
+                        Status(control_status).name,
+                        self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0],
+                        control_id
+                    ))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
-                tests_count = len(CURRENT_SCAN)
-                tests_count_not_null = 0
-                for status in CURRENT_SCAN:
-                    if status[3]:
-                        tests_count_not_null+=1
 
+    def initial_scan(self):
+        scan_date = datetime.datetime.today().strftime('%Y-%m-%d')
+        try:
+            with self.connection:
                 self.connection.execute(
                     "INSERT OR REPLACE INTO scansystem \
-                    (scan_date, longitude, tests_count, status_not_null)\
-                    VALUES (?, ?, ?, ?)",
-                    (scan_date, scan_longitude, 
-                    tests_count, tests_count_not_null))
+                    (id, scandate) VALUES (?, ?)",
+                    (None, scan_date))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
+
+
+    def add_time(self, start_time, end_time, duration):
+        max_id = self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0]
+        try:
+            with self.connection:
+                test_count_query = (
+                    '''
+                    SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?
+                    ''')
+                test_count_not_null_query = (
+                    '''
+                    SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? AND status IS NOT NULL
+                    ''')
+                test_count = self.connection.execute(test_count_query, str(max_id)).fetchone()[0]
+                test_count_not_null = self.connection.execute(test_count_not_null_query, str(max_id)).fetchone()[0]
+
+                sql = (
+                    '''
+                    UPDATE scansystem
+                          SET start_time = ? ,
+                              end_time = ? ,
+                              duration = ? ,
+                              tests_count = ? ,
+                              not_null_status = ?
+                          WHERE id = ?
+                    ''')
+                self.connection.execute(sql, (str(start_time), str(end_time), duration, str(test_count), str(test_count_not_null), max_id))
+
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
