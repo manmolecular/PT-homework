@@ -6,11 +6,11 @@ import sqlite3
 import ast
 import pytest
 
-LOCAL_DB = sqlite_handle()
+local_db = sqlite_handle()
 
 # Check if function return object of sqlite3
 def test_sqlite_object():
-    assert isinstance(LOCAL_DB, sqlite_handle)
+    assert isinstance(local_db, sqlite_handle)
 
 def test_connect_database():
     assert isinstance(connect_database(), sqlite3.Connection)
@@ -20,7 +20,7 @@ def test_json_loader():
     assert isinstance(load_json(), list)
 
 def test_create_database():
-    create_database = LOCAL_DB.create_db()
+    create_database = local_db.create_db()
     connection = connect_database()
     with connection:
         assert isinstance(connection.execute(
@@ -32,7 +32,7 @@ def test_create_database():
 def test_add_control_good():
     connection = connect_database()
     with connection:
-        control_func = LOCAL_DB.add_control(0, 'name', 'transport', 5)
+        control_func = local_db.add_control(0, 'name', 'transport', 5)
         value_from_db = connection.execute("SELECT status FROM scandata \
             WHERE id = (SELECT MAX(ID) FROM scandata)").fetchone()[0]
         value_from_enum = Status(5).name

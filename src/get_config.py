@@ -3,14 +3,14 @@
 import json
 from pathlib import Path
 
-JSON_CONFIG = None
+json_config = None
 CONFIG_CONTEST = 'config.json'
 CONFIG_DIR = 'configs'
 
 
 def get_config():
-    global JSON_CONFIG
-    if not JSON_CONFIG:
+    global json_config
+    if not json_config:
         with Path('.').joinpath(CONFIG_DIR).joinpath(CONFIG_CONTEST).open() as f:
-            JSON_CONFIG = json.load(f)
-    return JSON_CONFIG
+            json_config = json.load(f)
+    return json_config
