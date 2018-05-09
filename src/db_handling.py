@@ -13,8 +13,11 @@ DB_NAME = 'database.db'
 
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
-        Exception.__init__(self, 'DatabaseError {}'.format(error_args))
-        self.error_args = error_args
+        super().__init__(self)
+        self.error_args=error_args
+
+    def __str__(self):
+        return (self.error_args)
 
 
 class Status(Enum):
