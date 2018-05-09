@@ -20,27 +20,29 @@
          <h2 class="main-title">
             Compliance summary
          </h2>
-         Test run number: {{sys.scan_id }} <br>
-         Date of scanning: {{ sys.date }} <br>
-         Longitude of scanning: {{ sys.longitude }} <br>
-         Number of tests in database: {{ sys.counter }} <br>
-         Tests with not null statuses: {{ sys.counter_not_null }} <br>
+         Test run number: {{sys.scanid }} <br>
+         Date of scanning: {{ sys.scandate }} <br>
+         Start time: {{ sys.start_time }} <br>
+         End time: {{ sys.end_time }} <br>
+         Longitude of scanning: {{ sys.duration }} <br>
+         Number of tests in database: {{ sys.tests_count }} <br>
+         Tests with not null statuses: {{ sys.not_null_status }} <br>
 
          <article class="A4">
          <h2>
             Passed controls
          </h2>
-         {% for record in sys.curr_test %}
+         {% for record in sys.controls %}
          <article>
-            <h4> Control name: {{ record.header }} </h4>
-            Control id: {{ record.script_id }} <br>
+            <h4> Control name: {{ record.name }} </h4>
+            Control id: {{ record.contrid }} <br>
             Check for file: "{{ record.filename }}" <br>
             Requirements: {{ record.requirement }} <br>
             Transport: {{ record.transport}} <br>
             Status: <span class="{{ record.status }}"> {{ record.status }} </span> <br>
             <p>
                Description:
-               {{ record.descr }}
+               {{ record.description }}
             </p>
          </article>
          {% endfor %}
