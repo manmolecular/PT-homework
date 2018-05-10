@@ -49,8 +49,8 @@ def test_create_database():
     scansystem = ['id', 'scandate', 'start_time', 'end_time', 'duration',
                   'tests_count', 'not_null_status']
 
-    control_columns =
-    connection.execute("PRAGMA table_info(control);").fetchall()
+    control_columns = connection.execute(
+        "PRAGMA table_info(control);").fetchall()
 
 
 scandata_columns =
