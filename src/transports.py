@@ -31,13 +31,12 @@ class TransportUnknown(Exception):
 
 class TransportConnectionError(TransportError):
     def __init__(self, error_args):
-        TransportError.__init__(self, error_args)
+        super().__init__(error_args)
 
 
 class TransportIOError(TransportError):
     def __init__(self, error_args):
-        TransportError.__init__(self, error_args)
-
+        super().__init__(error_args)
 
 # MySQL transport
 class MySQLtransport():
