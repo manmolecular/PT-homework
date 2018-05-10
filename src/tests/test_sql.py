@@ -35,7 +35,9 @@ def prepare_base():
         connection.cursor().execute('''
                 CREATE TABLE IF NOT EXISTS `empty` (
                 `id` int NOT NULL AUTO_INCREMENT, 
-                PRIMARY KEY (`id`));''')
+                PRIMARY KEY (`id`)) ENGINE=InnoDB 
+                DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+                AUTO_INCREMENT=1 ;''')
 
         sql = "INSERT IGNORE INTO `users` (`email`, `password`) \
             VALUES (%s, %s)"
