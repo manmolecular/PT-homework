@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Module for report creating
-from jinja2 import Environment, PackageLoader, \
-    FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from collections import namedtuple
 from weasyprint import HTML, CSS
 from db_handling import DatabaseError, connect_database
