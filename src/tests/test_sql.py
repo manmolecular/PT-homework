@@ -21,6 +21,7 @@ def prepare_base():
     with connection:
         connection.cursor().execute('''
                 DROP TABLE IF EXISTS users;
+                DROP TABLE IF EXISTS empty;
                 ''')
 
         connection.cursor().execute('''
@@ -28,9 +29,14 @@ def prepare_base():
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `email` varchar(255) COLLATE utf8_bin NOT NULL,
                 `password` varchar(255) COLLATE utf8_bin NOT NULL,
-                PRIMARY KEY (`id`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
-                    AUTO_INCREMENT=1 ;''')
+                PRIMARY KEY (`id`)) ENGINE=InnoDB 
+                DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
+                AUTO_INCREMENT=1 ;''')
+
+        connection.cursor().execute('''
+                CREATE TABLE IF NOT EXISTS `empty` (
+                `id` int NOT NULL AUTO_INCREMENT, 
+                PRIMARY KEY (`id`));''')
 
         sql = "INSERT IGNORE INTO `users` (`email`, `password`) \
             VALUES (%s, %s)"
@@ -39,37 +45,17 @@ def prepare_base():
 
     connection.close()
 
-def drop_n_create_table():
-    connection = pymysql.connect(host = 'localhost', 
-        user = 'root', 
-        port = 43306, 
-        password = 'password', 
-        db = 'def_database', 
-        charset='utf8', 
-        cursorclass=pymysql.cursors.DictCursor, 
-        unix_socket=False)
-
-    with connection:
-        connection.cursor().execute('''
-            DROP TABLE IF EXISTS users;
-            ''')
-
-        connection.cursor().execute('''
-        CREATE TABLE IF NOT EXISTS `users` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `email` varchar(255) COLLATE utf8_bin NOT NULL,
-        `password` varchar(255) COLLATE utf8_bin NOT NULL,
-        PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
-            AUTO_INCREMENT=1 ;''')
-
-    connection.close()
-
 def test_mysql_init():
     prepare_base()
+
     result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'], 
         SQLdefaults['login'], SQLdefaults['password'])
     assert isinstance(result, MySQLtransport)
+
+    default_names = ['id', 'email', 'password']
+    columns = result.sql_exec("SELECT * FROM information_schema.columns WHERE table_schema = 'def_database' AND table_name = 'users'")
+    for index, column in enumerate(columns):
+        assert (column['COLUMN_NAME'] == default_names[index])
 
 def test_mysql_wrong_host():
     with pytest.raises(TransportConnectionError):
@@ -96,37 +82,33 @@ def test_get_transport():
     assert isinstance(result, MySQLtransport)
 
 def test_exec():
-    prepare_base()
+    right_dict = {'password': 'very-secret', 'id': 1}
     result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
-        FROM `users` WHERE `email`=%s", SQL_DATA)
+        FROM `users` WHERE `email`=%s", SQL_DATA)[0]
     assert isinstance(result, dict)
+    assert (right_dict == result)
 
 def test_empty_exec():
-    result = get_transport('SQL').sql_exec("", "")
-    assert result is None
-
-def test_empty_data_exec():
     with pytest.raises(TransportError):
-        result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
-            FROM `users` WHERE `email`=%s", "")
+        result = get_transport('SQL').sql_exec("", "")
 
 def test_not_empty_table():
     result = get_transport('SQL').check_if_empty_table('users')
     assert not result
 
 def test_empty_table():
-    drop_n_create_table()
-    result = get_transport('SQL').check_if_empty_table('users')
+    result = get_transport('SQL').check_if_empty_table('empty')
     assert result
 
 def test_all_empty_tables():
-    prepare_base()
     result = get_transport('SQL').all_empty_tables()
     assert isinstance(result, list)
+    assert (len(result) == 17)
 
 def test_all_not_empty_tables():
     result = get_transport('SQL').all_not_empty_tables()
     assert isinstance(result, list)
+    assert (len(result) == 67)
 
 def test_check_database_exist():
     result = get_transport('SQL').check_database_exist('def_database')
