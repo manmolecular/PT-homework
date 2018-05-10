@@ -2,14 +2,14 @@
 # Main module for scripts calling
 from pathlib import Path
 from transports import SSHtransport
-from db_handling import sqlite_handle
+from db_handling import SQLiteHandling
 from report import make_report
 from time import gmtime, strftime
 import importlib
 import time
 
 SCRIPT_DIR = 'scripts'
-local_db = sqlite_handle()
+local_db = SQLiteHandling()
 
 
 # Import all scripts from folder

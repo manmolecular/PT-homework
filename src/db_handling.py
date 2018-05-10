@@ -45,7 +45,7 @@ def connect_database():
     return connection
 
 
-class sqlite_handle():
+class SQLiteHandling():
     def __init__(self):
         self.connection = connect_database()
         self.connection.execute("PRAGMA foreign_keys = ON")

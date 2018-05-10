@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # Tests for database handling
 from db_handling import connect_database, load_json, \
-DatabaseError, sqlite_handle, Status
+DatabaseError, SQLiteHandling, Status
 import sqlite3
 import ast
 import pytest
 
-local_db = sqlite_handle()
+local_db = SQLiteHandling()
 local_db.create_db()
 
 # Check if function return object of sqlite3
 def test_sqlite_object():
-    assert isinstance(local_db, sqlite_handle)
+    assert isinstance(local_db, SQLiteHandling)
 
 def test_connect_database():
     assert isinstance(connect_database(), sqlite3.Connection)
