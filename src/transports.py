@@ -110,9 +110,8 @@ class MySQLtransport():
                 ''')
             return cursor.fetchall()
 
-    def __del__(self):
+    def close(self):
         self.connection.close()
-
 
 # SSH transport class
 class SSHtransport():
