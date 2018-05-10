@@ -169,7 +169,8 @@ class SQLiteHandling():
                           WHERE id = ?
                     ''')
                 self.connection.execute(sql, (str(start_time), str(end_time),
-                                              duration, str(test_count), str(test_count_not_null),
+                                              duration, str(test_count), 
+                                              str(test_count_not_null),
                                               max_id))
 
         except sqlite3.Error as e:

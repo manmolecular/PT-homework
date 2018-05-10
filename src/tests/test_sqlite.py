@@ -50,11 +50,11 @@ def test_create_database():
                   'tests_count', 'not_null_status']
 
     control_columns = connection.execute(
-        "PRAGMA table_info(control);").fetchall()
+        'PRAGMA table_info(control);').fetchall()
     scandata_columns = connection.execute(
-        "PRAGMA table_info(scandata);").fetchall()
+        'PRAGMA table_info(scandata);').fetchall()
     scansystem_columns = connection.execute(
-        "PRAGMA table_info(scansystem);").fetchall()
+        'PRAGMA table_info(scansystem);').fetchall()
     for index, controldb in enumerate(control_columns):
         assert (controldb[1] == control[index])
     for index, scandatadb in enumerate(scandata_columns):

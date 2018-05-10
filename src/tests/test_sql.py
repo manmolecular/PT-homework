@@ -3,7 +3,8 @@
 import pymysql
 import pytest
 
-from transports import MySQLtransport, get_defaults, get_transport, TransportError, TransportConnectionError
+from transports import MySQLtransport, get_defaults, get_transport, \
+TransportError, TransportConnectionError
 
 SQLdefaults = get_defaults('SQL')
 SQL_DATA = 'webmaster@python.org'

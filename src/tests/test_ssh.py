@@ -12,7 +12,8 @@ SSHdefaults = get_defaults('SSH')
 # Check for different get_transport function calls
 def test_get_transport_with_args():
     transport_instance = get_transport('SSH', SSHdefaults['host'],
-                                       SSHdefaults['port'], SSHdefaults['login'], SSHdefaults['password'])
+                                       SSHdefaults['port'], SSHdefaults['login'], 
+                                       SSHdefaults['password'])
     assert isinstance(transport_instance, SSHtransport)
 
 
@@ -30,7 +31,8 @@ def test_get_transport_empty_host():
 # Check for different SSHtransport __init__ call
 def test_init_exceptions():
     transport_instance = SSHtransport(SSHdefaults['host'],
-                                      SSHdefaults['port'], SSHdefaults['login'], SSHdefaults['password'])
+                                      SSHdefaults['port'], SSHdefaults['login'], 
+                                      SSHdefaults['password'])
     assert isinstance(transport_instance, SSHtransport)
 
 
