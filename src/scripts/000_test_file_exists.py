@@ -6,6 +6,7 @@ from db_handling import Status
 FILE_NAME = 'testfile'
 TRANSPORT = 'SSH'
 
+
 def main():
     try:
         transport_instance = get_transport(TRANSPORT)
