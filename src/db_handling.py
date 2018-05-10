@@ -59,7 +59,8 @@ class sqlite_handle():
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         description TEXT,
                         filename TEXT,
-                        requirement TEXT)
+                        requirement TEXT,
+                        transport TEXT)
                     '''
                     )
                 self.connection.execute(
@@ -99,19 +100,19 @@ class sqlite_handle():
                 for cur_control in controls:
                     self.connection.execute(
                         "INSERT OR REPLACE INTO \
-                        control(id, description, filename, requirement) \
-                        VALUES(?, ?, ?, ?)",
+                        control(id, description, filename, requirement, transport) \
+                        VALUES(?, ?, ?, ?, ?)",
                         (
                             cur_control[0],
                             cur_control[1],
                             cur_control[2],
-                            cur_control[3]
+                            cur_control[3],
+                            cur_control[4]
                         ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
-    def add_control(self, control_id, control_name, 
-                    transport_name, control_status):
+    def add_control(self, control_id, control_name, control_status):
         try:
             with self.connection:
                 self.connection.execute(
@@ -120,7 +121,7 @@ class sqlite_handle():
                     VALUES (?, ?, ?, ?, ?)",
                     (
                         control_name,
-                        transport_name,
+                        self.connection.execute("SELECT transport FROM control WHERE id = ?", str(control_id)).fetchone()[0],
                         Status(control_status).name,
                         self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0],
                         control_id
@@ -145,17 +146,9 @@ class sqlite_handle():
         max_id = self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0]
         try:
             with self.connection:
-                test_count_query = (
-                    '''
-                    SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?
-                    ''')
-                test_count_not_null_query = (
-                    '''
-                    SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? AND status IS NOT NULL
-                    ''')
-                test_count = self.connection.execute(test_count_query, str(max_id)).fetchone()[0]
-                test_count_not_null = self.connection.execute(test_count_not_null_query, str(max_id)).fetchone()[0]
-
+                test_count = self.connection.execute("SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?", str(max_id)).fetchone()[0]
+                test_count_not_null = self.connection.execute("SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? AND status IS NOT NULL", str(max_id)).fetchone()[0]
+                
                 sql = (
                     '''
                     UPDATE scansystem

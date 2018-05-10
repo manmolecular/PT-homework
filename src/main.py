@@ -22,7 +22,7 @@ def import_scripts():
         script_name = file.name[:-3]
         status = importlib.import_module('.' + script_name, 
                                          package=SCRIPT_DIR).main()
-        local_db.add_control(script_id, script_name, status[0], status[1])
+        local_db.add_control(script_id, script_name, status)
 
 
 def main():
