@@ -37,5 +37,6 @@ def main():
     make_report()
     local_db.close()
 
+
 if __name__ == "__main__":
     main()
