@@ -51,20 +51,17 @@ def test_create_database():
 
     control_columns = connection.execute(
         "PRAGMA table_info(control);").fetchall()
-
-
-scandata_columns =
-connection.execute("PRAGMA table_info(scandata);").fetchall()
-scansystem_columns =
-connection.execute("PRAGMA table_info(scansystem);").fetchall()
-for index, controldb in enumerate(control_columns):
-    assert (controldb[1] == control[index])
-for index, scandatadb in enumerate(scandata_columns):
-    assert (scandatadb[1] == scandata[index])
-for index, scansystemdb in enumerate(scansystem_columns):
-    assert (scansystemdb[1] == scansystem[index])
-
-connection.close()
+    scandata_columns = connection.execute(
+        "PRAGMA table_info(scandata);").fetchall()
+    scansystem_columns = connection.execute(
+        "PRAGMA table_info(scansystem);").fetchall()
+    for index, controldb in enumerate(control_columns):
+        assert (controldb[1] == control[index])
+    for index, scandatadb in enumerate(scandata_columns):
+        assert (scandatadb[1] == scandata[index])
+    for index, scansystemdb in enumerate(scansystem_columns):
+        assert (scansystemdb[1] == scansystem[index])
+    connection.close()
 
 
 def test_add_control_good():
