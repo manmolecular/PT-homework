@@ -75,10 +75,7 @@ class MySQLtransport():
             INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = %s'
             cursor.execute(sql_query, database_name)
             result = cursor.fetchone()
-            if result:
-                return True
-            else:
-                return False
+            return bool(result)
 
     def check_if_empty_table(self, table_name=None):
         if not table_name:
