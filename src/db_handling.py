@@ -11,6 +11,7 @@ DB_CONTEST = 'controls.json'
 DB_DIR = 'configs'
 DB_NAME = 'database.db'
 
+
 class DatabaseError(sqlite3.Error):
     def __init__(self, error_args):
         super().__init__(self)
