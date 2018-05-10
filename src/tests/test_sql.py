@@ -14,7 +14,7 @@ def prepare_base():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  port=43306,
-                                 password='password',
+                                 password='rootpass',
                                  db='def_database',
                                  charset='utf8',
                                  cursorclass=pymysql.cursors.DictCursor,

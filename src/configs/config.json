@@ -7,7 +7,7 @@
       "port": 22022
     },
     "SQL": {
-        "password": "password",
+        "password": "rootpass",
         "login": "root",
         "port": 43306
     }
