@@ -8,7 +8,7 @@ from typing import NamedTuple
 import ast
 
 
-class control_info(NamedTuple):
+class ControlInfo(NamedTuple):
     contrid: int
     description: str
     filename: str
@@ -18,7 +18,7 @@ class control_info(NamedTuple):
     status: str
 
 
-class basic_scan_info(NamedTuple):
+class BasicScanInfo(NamedTuple):
     scanid: int
     scandate: str
     start_time: str
@@ -27,6 +27,7 @@ class basic_scan_info(NamedTuple):
     tests_count: int
     not_null_status: int
     controls: list
+
 
 def get_rendered_html():
     connection = connect_database()
@@ -40,7 +41,7 @@ def get_rendered_html():
         scandatas = connection.execute('SELECT * FROM scandata WHERE scansystem_id = ?', (str(scan[0]))).fetchall()
         for scandata in scandatas:
             control = connection.execute('SELECT * FROM control WHERE id = ?', (str(scandata[5]))).fetchone()
-            scan_controls.append(control_info(
+            scan_controls.append(ControlInfo(
                 contrid=control[0],
                 description=control[1],
                 filename=control[2],
@@ -49,7 +50,7 @@ def get_rendered_html():
                 transport=scandata[2],
                 status=scandata[3]))
         
-        render_data.append(basic_scan_info(
+        render_data.append(BasicScanInfo(
             scanid=scan[0],
             scandate=scan[1],
             start_time=scan[2],
