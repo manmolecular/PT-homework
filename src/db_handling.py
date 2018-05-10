@@ -31,7 +31,7 @@ class Status(Enum):
 def load_json():
     global json_db
     if not json_db:
-        with open(PurePosixPath(DB_DIR, DB_CONTEST)) as f:
+        with open(str(PurePosixPath(DB_DIR, DB_CONTEST))) as f:
             json_db = json.load(f)
     return json_db
 
