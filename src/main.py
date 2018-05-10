@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # Main module for scripts calling
 from pathlib import Path
-from transports import SSHtransport
 from db_handling import SQLiteHandling
 from report import make_report
 from time import gmtime, strftime
