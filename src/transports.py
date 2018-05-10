@@ -67,7 +67,7 @@ class MySQLtransport():
                 except pymysql.MySQLError as e:
                     raise TransportError(e) from e
 
-    def check_database_exist(self, database_name=None):
+    def check_database_exist(self, database_name):
         if not database_name:
             raise TransportError({'database_name': database_name})
         with self.connection.cursor() as cursor:
