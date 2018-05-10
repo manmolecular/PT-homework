@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # Module for report creating
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-from collections import namedtuple
-from weasyprint import HTML, CSS
-from db_handling import DatabaseError, connect_database
 from typing import NamedTuple
-import ast
+
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from weasyprint import HTML, CSS
+
+from db_handling import connect_database
 
 
 class ControlInfo(NamedTuple):
@@ -39,11 +39,11 @@ def get_rendered_html():
     for scan in scans:
         scan_controls = []
         scandatas = connection.execute(
-            'SELECT * FROM scandata WHERE scansystem_id = ?', 
+            'SELECT * FROM scandata WHERE scansystem_id = ?',
             (str(scan[0]))).fetchall()
         for scandata in scandatas:
             control = connection.execute(
-                'SELECT * FROM control WHERE id = ?', 
+                'SELECT * FROM control WHERE id = ?',
                 (str(scandata[5]))).fetchone()
             scan_controls.append(ControlInfo(
                 contrid=control[0],
@@ -53,7 +53,7 @@ def get_rendered_html():
                 name=scandata[1],
                 transport=scandata[2],
                 status=scandata[3]))
-        
+
         render_data.append(BasicScanInfo(
             scanid=scan[0],
             scandate=scan[1],

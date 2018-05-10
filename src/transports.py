@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # SSH transport class based on PT-security lectures
-from get_config import get_config
+import socket
+
 import paramiko
 import pymysql.cursors
-import socket
-import json
+
+from get_config import get_config
 
 FILE_DEFAULT = 'testfile'
 
@@ -13,7 +14,7 @@ FILE_DEFAULT = 'testfile'
 class TransportError(Exception):
     def __init__(self, error_args):
         super().__init__(self)
-        self.error_args=error_args
+        self.error_args = error_args
 
     def __str__(self):
         return str(self.error_args)
@@ -23,7 +24,7 @@ class TransportUnknown(Exception):
     def __init__(self, error_args):
         def __init__(self, error_args):
             super().__init__(self)
-            self.error_args=error_args
+            self.error_args = error_args
 
         def __str__(self):
             return str(self.error_args)
@@ -37,6 +38,7 @@ class TransportConnectionError(TransportError):
 class TransportIOError(TransportError):
     def __init__(self, error_args):
         super().__init__(error_args)
+
 
 # MySQL transport
 class MySQLtransport():
@@ -110,6 +112,7 @@ class MySQLtransport():
     def close(self):
         self.connection.close()
 
+
 # SSH transport class
 class SSHtransport():
     def __init__(self, host, port, login, password):
@@ -152,9 +155,9 @@ class SSHtransport():
 
 # Set default area of transport names
 global_transport_names = {
-        'SSH': SSHtransport,
-        'SQL': MySQLtransport
-    }
+    'SSH': SSHtransport,
+    'SQL': MySQLtransport
+}
 
 
 # Get defaults from config file

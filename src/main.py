@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # Main module for scripts calling
-from pathlib import Path
-from db_handling import SQLiteHandling
-from report import make_report
-from time import gmtime, strftime
 import importlib
 import time
+from pathlib import Path
+from time import gmtime, strftime
+
+from db_handling import SQLiteHandling
+from report import make_report
 
 SCRIPT_DIR = 'scripts'
 local_db = SQLiteHandling()
@@ -19,7 +20,7 @@ def import_scripts():
             continue
         script_id = int(''.join(filter(str.isdigit, file.name)))
         script_name = file.name[:-3]
-        status = importlib.import_module('.' + script_name, 
+        status = importlib.import_module('.' + script_name,
                                          package=SCRIPT_DIR).main()
         local_db.add_control(script_id, script_name, status)
 
