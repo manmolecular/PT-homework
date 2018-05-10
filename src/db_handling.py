@@ -48,7 +48,7 @@ def connect_database():
 class SQLiteHandling():
     def __init__(self):
         self.connection = connect_database()
-        self.connection.execute("PRAGMA foreign_keys = ON")
+        self.connection.execute('PRAGMA foreign_keys = ON')
 
     def create_db(self):
         try:
@@ -100,9 +100,10 @@ class SQLiteHandling():
             with self.connection:
                 for cur_control in controls:
                     self.connection.execute(
-                        "INSERT OR REPLACE INTO \
-                        control(id, description, filename, requirement, transport) \
-                        VALUES(?, ?, ?, ?, ?)",
+                        '''
+                        INSERT OR REPLACE INTO
+                        control(id, description, filename, requirement, 
+                        transport) VALUES(?, ?, ?, ?, ?)''',
                         (
                             cur_control[0],
                             cur_control[1],
@@ -117,14 +118,18 @@ class SQLiteHandling():
         try:
             with self.connection:
                 self.connection.execute(
-                    "INSERT OR REPLACE INTO \
-                    scandata(name, transport, status, scansystem_id, control_id) \
-                    VALUES (?, ?, ?, ?, ?)",
+                    '''
+                    INSERT OR REPLACE INTO
+                    scandata(name, transport, status, scansystem_id, 
+                    control_id) VALUES (?, ?, ?, ?, ?)''',
                     (
                         control_name,
-                        self.connection.execute("SELECT transport FROM control WHERE id = ?", str(control_id)).fetchone()[0],
+                        self.connection.execute(
+                            'SELECT transport FROM control WHERE id = ?', 
+                            str(control_id)).fetchone()[0],
                         Status(control_status).name,
-                        self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0],
+                        self.connection.execute(
+                            'SELECT max(id) FROM scansystem').fetchone()[0],
                         control_id
                     ))
         except sqlite3.Error as e:
@@ -136,19 +141,24 @@ class SQLiteHandling():
         try:
             with self.connection:
                 self.connection.execute(
-                    "INSERT OR REPLACE INTO scansystem \
-                    (id, scandate) VALUES (?, ?)",
+                    'INSERT OR REPLACE INTO scansystem'
+                    '(id, scandate) VALUES (?, ?)',
                     (None, scan_date))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
 
     def add_time(self, start_time, end_time, duration):
-        max_id = self.connection.execute("SELECT max(id) FROM scansystem").fetchone()[0]
+        max_id = self.connection.execute(
+            'SELECT max(id) FROM scansystem').fetchone()[0]
         try:
             with self.connection:
-                test_count = self.connection.execute("SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?", str(max_id)).fetchone()[0]
-                test_count_not_null = self.connection.execute("SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? AND status IS NOT NULL", str(max_id)).fetchone()[0]
+                test_count = self.connection.execute(
+                    'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?', 
+                    str(max_id)).fetchone()[0]
+                test_count_not_null = self.connection.execute(
+                    'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? \
+                    AND status IS NOT NULL', str(max_id)).fetchone()[0]
                 
                 sql = (
                     '''
@@ -160,7 +170,9 @@ class SQLiteHandling():
                               not_null_status = ?
                           WHERE id = ?
                     ''')
-                self.connection.execute(sql, (str(start_time), str(end_time), duration, str(test_count), str(test_count_not_null), max_id))
+                self.connection.execute(sql, (str(start_time), str(end_time), 
+                    duration, str(test_count), str(test_count_not_null), 
+                    max_id))
 
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
