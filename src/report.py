@@ -38,9 +38,13 @@ def get_rendered_html():
     render_data = []
     for scan in scans:
         scan_controls = []
-        scandatas = connection.execute('SELECT * FROM scandata WHERE scansystem_id = ?', (str(scan[0]))).fetchall()
+        scandatas = connection.execute(
+            'SELECT * FROM scandata WHERE scansystem_id = ?', 
+            (str(scan[0]))).fetchall()
         for scandata in scandatas:
-            control = connection.execute('SELECT * FROM control WHERE id = ?', (str(scandata[5]))).fetchone()
+            control = connection.execute(
+                'SELECT * FROM control WHERE id = ?', 
+                (str(scandata[5]))).fetchone()
             scan_controls.append(ControlInfo(
                 contrid=control[0],
                 description=control[1],

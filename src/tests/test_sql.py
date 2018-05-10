@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # Tests for sql transport
 from transports import MySQLtransport, get_defaults, get_transport
-from transports import TransportError, TransportUnknown, TransportConnectionError, TransportIOError
+from transports import TransportError, TransportUnknown, \
+TransportConnectionError, TransportIOError
 import pymysql
 import pytest
 
@@ -53,7 +54,9 @@ def test_mysql_init():
     assert isinstance(result, MySQLtransport)
 
     default_names = ['id', 'email', 'password']
-    columns = result.sql_exec("SELECT * FROM information_schema.columns WHERE table_schema = 'def_database' AND table_name = 'users'")
+    columns = result.sql_exec(
+        "SELECT * FROM information_schema.columns WHERE \
+        table_schema = 'def_database' AND table_name = 'users'")
     for index, column in enumerate(columns):
         assert (column['COLUMN_NAME'] == default_names[index])
 
