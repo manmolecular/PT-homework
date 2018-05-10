@@ -21,11 +21,8 @@ def prepare_base():
                                  unix_socket=False)
 
     with connection:
-        connection.cursor().execute('''
-                DROP TABLE IF EXISTS users;
-                DROP TABLE IF EXISTS empty;
-                ''')
-
+        connection.cursor().execute('DROP TABLE IF EXISTS users')
+        connection.cursor().execute('DROP TABLE IF EXISTS empty')
         connection.cursor().execute('''
                 CREATE TABLE IF NOT EXISTS `users` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
