@@ -54,18 +54,15 @@ class MySQLtransport():
         except pymysql.MySQLError as e:
             raise TransportConnectionError(e) from e
 
-    def sql_exec(self, sql_query=None, sql_data=None):
+    def sql_exec(self, sql_query, sql_data=None):
         if not sql_query:
-            return None
-        elif not sql_data:
-            raise TransportError({'sql_data without sql_query'})
-        else:
-            with self.connection.cursor() as cursor:
-                try:
-                    cursor.execute(sql_query, sql_data)
-                    return cursor.fetchone()
-                except pymysql.MySQLError as e:
-                    raise TransportError(e) from e
+            raise TransportError({'empty query'})
+        with self.connection.cursor() as cursor:
+            try:
+                cursor.execute(sql_query, sql_data)
+                return cursor.fetchall()
+            except pymysql.MySQLError as e:
+                raise TransportError(e) from e
 
     def check_database_exist(self, database_name):
         if not database_name:
@@ -136,9 +133,6 @@ class SSHtransport():
 
     def get_file(self, file_name=None):
         file_name = file_name or FILE_DEFAULT
-
-        if not file_name:
-            raise TransportError({'file_name': file_name})
         sftp = self.client.open_sftp()
 
         try:
