@@ -97,7 +97,7 @@ def test_exec():
 
 def test_empty_exec():
     with pytest.raises(TransportError):
-        result = get_transport('SQL').sql_exec("", "")
+        get_transport('SQL').sql_exec("", "")
 
 
 def test_not_empty_table():
