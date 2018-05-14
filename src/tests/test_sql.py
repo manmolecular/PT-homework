@@ -20,10 +20,10 @@ def prepare_base():
                                  cursorclass=pymysql.cursors.DictCursor,
                                  unix_socket=False)
 
-    with connection:
-        connection.cursor().execute('DROP TABLE IF EXISTS users')
-        connection.cursor().execute('DROP TABLE IF EXISTS empty')
-        connection.cursor().execute('''
+    with connection as cursor:
+        cursor.execute('DROP TABLE IF EXISTS users')
+        cursor.execute('DROP TABLE IF EXISTS empty')
+        cursor.execute('''
                 CREATE TABLE IF NOT EXISTS `users` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `email` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -32,7 +32,7 @@ def prepare_base():
                 DEFAULT CHARSET=utf8 COLLATE=utf8_bin 
                 AUTO_INCREMENT=1 ;''')
 
-        connection.cursor().execute('''
+        cursor.execute('''
                 CREATE TABLE IF NOT EXISTS `empty` (
                 `id` int NOT NULL AUTO_INCREMENT, 
                 PRIMARY KEY (`id`)) ENGINE=InnoDB 
@@ -41,7 +41,7 @@ def prepare_base():
 
         sql = "INSERT IGNORE INTO `users` (`email`, `password`) \
             VALUES (%s, %s)"
-        connection.cursor().execute(sql, ('webmaster@python.org', \
+        cursor.execute(sql, ('webmaster@python.org', \
                                           'very-secret'))
 
     connection.close()
