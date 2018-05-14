@@ -127,12 +127,12 @@ class SSHtransport():
                 paramiko.SSHException, socket.error) as e:
             raise TransportConnectionError(e) from e
 
-    def exec(self, command=None):
+    def exec(self, command):
         if not command:
             raise TransportError({'command': command})
         stdin, stdout, stderr = self.client.exec_command(command)
         return stdout.read()
-
+        
     def get_file(self, file_name=None):
         file_name = file_name or FILE_DEFAULT
         sftp = self.client.open_sftp()
