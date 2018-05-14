@@ -10,8 +10,8 @@ from get_config import get_config
 FILE_DEFAULT = 'testfile'
 
 
-# Classes for error handling
 class TransportError(Exception):
+    """Classes for error handling"""
     def __init__(self, error_args):
         super().__init__(self)
         self.error_args = error_args
@@ -112,7 +112,6 @@ class MySQLtransport():
         self.connection.close()
 
 
-# SSH transport class
 class SSHtransport():
     def __init__(self, host, port, login, password):
         self.client = paramiko.SSHClient()
@@ -132,7 +131,7 @@ class SSHtransport():
             raise TransportError({'command': command})
         stdin, stdout, stderr = self.client.exec_command(command)
         return stdout.read()
-        
+
     def get_file(self, file_name=None):
         file_name = file_name or FILE_DEFAULT
         sftp = self.client.open_sftp()
@@ -152,15 +151,14 @@ class SSHtransport():
         self.client.close()
 
 
-# Set default area of transport names
 global_transport_names = {
     'SSH': SSHtransport,
     'SQL': MySQLtransport
 }
 
 
-# Get defaults from config file
 def get_defaults(transport_name):
+    """Get defaults from config file"""
     json_cfg = get_config()
     return {
         'host': json_cfg['host'],
@@ -170,9 +168,9 @@ def get_defaults(transport_name):
     }
 
 
-# Get unique transport of some class
 def get_transport(transport_name, host=None,
                   port=None, login=None, password=None):
+    """Get unique transport of some class"""
     if transport_name not in global_transport_names:
         raise TransportUnknown({'transport_name': transport_name})
 
