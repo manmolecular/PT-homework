@@ -1,5 +1,5 @@
 [
-  ["000", "File named 'testfile' is present in the root folder on target system.", "file must be in folder,", "SSH"],
+  ["000", "File named 'testfile' is present in the root folder on target system", "file must be in folder", "SSH"],
   ["001", "File named 'unknown' doesn't exists in the root folder on target system", "file not exists", "SSH"],
   ["002", "Wrong transport for get file", "Transport is wrong", "SSH"]
 ]
