@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # Main module for scripts calling
 import importlib
-import time
+from datetime import datetime
 from pathlib import Path
-from time import gmtime, strftime
 
 from db_handling import SQLiteHandling
 from report import make_report
@@ -25,16 +24,20 @@ def import_scripts():
         local_db.add_control(script_id, script_name, status)
 
 
-def main():
-    start_time = strftime("%H:%M:%S", gmtime())
-    start_time_diff = time.time()
+def main():    
+    start_time = datetime.now()
+
     local_db.create_db()
     local_db.initial_scan()
     import_scripts()
-    end_time = strftime("%H:%M:%S", gmtime())
-    end_time_diff = time.time()
-    duration = end_time_diff - start_time_diff
-    local_db.add_time(start_time, end_time, duration)
+
+    end_time = datetime.now()
+    duration = end_time - start_time
+
+    local_db.add_time(
+        start_time.time().isoformat(timespec='milliseconds'), 
+        end_time.time().isoformat(timespec='milliseconds'), 
+        duration.total_seconds())
     make_report()
     local_db.close()
 
