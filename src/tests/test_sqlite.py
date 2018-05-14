@@ -34,10 +34,10 @@ def test_json_loader(connection):
     controls = connection.execute(
         'SELECT * from control').fetchall()
 
-    for index, json in enumerate(load_json()):
-        assert (int(json[0]) == int(controls[index][0]))
+    for json, control in zip(load_json(), controls):
+        assert int(json[0]) == int(control[0])
         for i in range(1, 4):
-            assert (str(json[i]) == str(controls[index][i]))
+            assert (str(json[i]) == str(control[i]))
 
     connection.close()
 
