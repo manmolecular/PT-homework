@@ -40,7 +40,6 @@ class TransportIOError(TransportError):
         super().__init__(error_args)
 
 
-# MySQL transport
 class MySQLtransport():
     def __init__(self, host, port, login, password):
         try:
