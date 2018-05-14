@@ -102,13 +102,9 @@ class SQLiteHandling():
                         '''
                         INSERT OR REPLACE INTO
                         control(id, description, requirement, 
-                        transport) VALUES(?, ?, ?, ?)''',
-                        (
-                            cur_control[0],
-                            cur_control[1],
-                            cur_control[2],
-                            cur_control[3]
-                        ))
+                        transport) VALUES(?, ?, ?, ?)''', 
+                        (tuple(cur_control)
+                    ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
