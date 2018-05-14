@@ -10,7 +10,7 @@ SQLdefaults = get_defaults('SQL')
 SQL_DATA = 'webmaster@python.org'
 
 
-def prepare_base():
+def setup_module():
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  port=43306,
@@ -48,8 +48,6 @@ def prepare_base():
 
 
 def test_mysql_init():
-    prepare_base()
-
     result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'],
                             SQLdefaults['login'], SQLdefaults['password'])
     assert isinstance(result, MySQLtransport)
