@@ -5,8 +5,11 @@ import sqlite3
 from db_handling import connect_database, load_json, \
     SQLiteHandling, Status
 
-local_db = SQLiteHandling()
-local_db.create_db()
+
+def setup_module():
+    global local_db
+    local_db = SQLiteHandling()
+    local_db.create_db()
 
 
 # Check if function return object of sqlite3
