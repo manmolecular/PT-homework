@@ -74,7 +74,7 @@ def test_exec():
 def test_exec_exception():
     with pytest.raises(TransportError):
         SSHtransport(SSHdefaults['host'], SSHdefaults['port'],
-                     SSHdefaults['login'], SSHdefaults['password']).exec()
+                     SSHdefaults['login'], SSHdefaults['password']).exec(None)
 
 
 # Check for getting existing file or getting file without name
