@@ -50,8 +50,6 @@ def setup_module():
 def test_mysql_init():
     result = MySQLtransport(SQLdefaults['host'], SQLdefaults['port'],
                             SQLdefaults['login'], SQLdefaults['password'])
-    assert isinstance(result, MySQLtransport)
-
     default_names = ['id', 'email', 'password']
     columns = result.sql_exec(
         "SELECT * FROM information_schema.columns WHERE \
