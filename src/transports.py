@@ -12,6 +12,7 @@ FILE_DEFAULT = 'testfile'
 
 class TransportError(Exception):
     """Classes for error handling"""
+
     def __init__(self, error_args):
         super().__init__(self)
         self.error_args = error_args

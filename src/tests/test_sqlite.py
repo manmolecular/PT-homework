@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Tests for database handling
 import sqlite3
+
 import pytest
 
 from db_handling import load_json, SQLiteHandling, Status

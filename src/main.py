@@ -24,7 +24,7 @@ def import_scripts():
         local_db.add_control(script_id, script_name, status)
 
 
-def main():    
+def main():
     start_time = datetime.now()
 
     local_db.create_db()
@@ -35,8 +35,8 @@ def main():
     duration = end_time - start_time
 
     local_db.add_time(
-        start_time.time().isoformat(timespec='milliseconds'), 
-        end_time.time().isoformat(timespec='milliseconds'), 
+        start_time.time().isoformat(timespec='milliseconds'),
+        end_time.time().isoformat(timespec='milliseconds'),
         duration.total_seconds())
     make_report()
     local_db.close()

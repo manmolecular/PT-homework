@@ -102,9 +102,9 @@ class SQLiteHandling():
                         '''
                         INSERT OR REPLACE INTO
                         control(id, description, requirement, 
-                        transport) VALUES(?, ?, ?, ?)''', 
+                        transport) VALUES(?, ?, ?, ?)''',
                         (tuple(cur_control)
-                    ))
+                         ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -163,7 +163,7 @@ class SQLiteHandling():
                           WHERE id = ?
                     ''')
                 self.connection.execute(sql, (str(start_time), str(end_time),
-                                              duration, str(test_count), 
+                                              duration, str(test_count),
                                               str(test_count_not_null),
                                               max_id))
 

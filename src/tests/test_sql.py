@@ -4,7 +4,7 @@ import pymysql
 import pytest
 
 from transports import MySQLtransport, get_defaults, get_transport, \
-TransportError, TransportConnectionError
+    TransportError, TransportConnectionError
 
 SQLdefaults = get_defaults('SQL')
 SQL_DATA = 'webmaster@python.org'
@@ -42,7 +42,7 @@ def setup_module():
         sql = "INSERT IGNORE INTO `users` (`email`, `password`) \
             VALUES (%s, %s)"
         cursor.execute(sql, ('webmaster@python.org', \
-                                          'very-secret'))
+                             'very-secret'))
 
     connection.close()
 
