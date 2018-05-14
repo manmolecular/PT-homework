@@ -18,7 +18,7 @@ class DatabaseError(sqlite3.Error):
         self.error_args = error_args
 
     def __str__(self):
-        return (self.error_args)
+        return self.error_args
 
 
 class Status(Enum):
