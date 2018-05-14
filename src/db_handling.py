@@ -59,7 +59,6 @@ class SQLiteHandling():
                     control(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         description TEXT,
-                        filename TEXT,
                         requirement TEXT,
                         transport TEXT)
                     '''
@@ -102,14 +101,13 @@ class SQLiteHandling():
                     self.connection.execute(
                         '''
                         INSERT OR REPLACE INTO
-                        control(id, description, filename, requirement, 
-                        transport) VALUES(?, ?, ?, ?, ?)''',
+                        control(id, description, requirement, 
+                        transport) VALUES(?, ?, ?, ?)''',
                         (
                             cur_control[0],
                             cur_control[1],
                             cur_control[2],
-                            cur_control[3],
-                            cur_control[4]
+                            cur_control[3]
                         ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])

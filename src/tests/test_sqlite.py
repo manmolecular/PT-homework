@@ -43,7 +43,7 @@ def test_create_database():
         assert isinstance(connection.execute(
             'SELECT * from control').fetchall(), list)
 
-    control = ['id', 'description', 'filename', 'requirement', 'transport']
+    control = ['id', 'description', 'requirement', 'transport']
     scandata = ['id', 'name', 'transport', 'status', 'scansystem_id',
                 'control_id']
     scansystem = ['id', 'scandate', 'start_time', 'end_time', 'duration',
@@ -69,7 +69,7 @@ def test_add_control_good():
     with connection:
         control_func = local_db.add_control(0, 'name', 5)
         value_from_db = connection.execute("SELECT status FROM scandata \
-            WHERE id = 1").fetchone()[0]
+            WHERE id = (SELECT MAX(id) from scandata)").fetchone()[0]
         value_from_enum = Status(5).name
         assert (value_from_db == value_from_enum)
     connection.close()

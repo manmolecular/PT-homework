@@ -11,7 +11,6 @@ from db_handling import connect_database
 class ControlInfo(NamedTuple):
     contrid: int
     description: str
-    filename: str
     requirement: str
     name: str
     transport: str
@@ -48,8 +47,7 @@ def get_rendered_html():
             scan_controls.append(ControlInfo(
                 contrid=control[0],
                 description=control[1],
-                filename=control[2],
-                requirement=control[3],
+                requirement=control[2],
                 name=scandata[1],
                 transport=scandata[2],
                 status=scandata[3]))
