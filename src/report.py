@@ -30,8 +30,6 @@ class BasicScanInfo(NamedTuple):
 
 def get_rendered_html():
     connection = connect_database()
-    curr = connection.cursor()
-
     scans = connection.execute('SELECT * FROM scansystem').fetchall()
 
     render_data = []
