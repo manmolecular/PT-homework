@@ -6,7 +6,10 @@ from transports import TransportError, TransportUnknown, \
     TransportConnectionError, SSHtransport, \
     get_defaults, get_transport
 
-SSHdefaults = get_defaults('SSH')
+
+def setup_module():
+    global SSHdefaults
+    SSHdefaults = get_defaults('SSH')
 
 
 # Check for different get_transport function calls
@@ -65,7 +68,7 @@ def test_exec():
     transport_instance = SSHtransport(SSHdefaults['host'],
                                       SSHdefaults['port'], SSHdefaults['login'],
                                       SSHdefaults['password']).exec('ls')
-    assert isinstance(transport_instance, bytes)
+    assert (str(transport_instance) == "b'testfile\\n'")
 
 
 def test_exec_exception():
