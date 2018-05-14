@@ -43,12 +43,6 @@ def test_json_loader(connection):
 
 
 def test_create_database(connection):
-    with connection:
-        assert isinstance(connection.execute(
-            'SELECT * from control').fetchall(), list)
-        assert isinstance(connection.execute(
-            'SELECT * from control').fetchall(), list)
-
     control = ['id', 'description', 'requirement', 'transport']
     scandata = ['id', 'name', 'transport', 'status', 'scansystem_id',
                 'control_id']
