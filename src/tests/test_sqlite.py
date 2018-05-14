@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # Tests for database handling
 import sqlite3
+import pytest
 
-from db_handling import connect_database, load_json, \
-    SQLiteHandling, Status
+from db_handling import load_json, SQLiteHandling, Status
+
+
+@pytest.fixture
+def connection():
+    from db_handling import connect_database
+    return connect_database()
 
 
 def setup_module():
@@ -17,13 +23,12 @@ def test_sqlite_object():
     assert isinstance(local_db, SQLiteHandling)
 
 
-def test_connect_database():
-    assert isinstance(connect_database(), sqlite3.Connection)
+def test_connect_database(connection):
+    assert isinstance(connection, sqlite3.Connection)
 
 
 # Check if we return list of parameters from json config
-def test_json_loader():
-    connection = connect_database()
+def test_json_loader(connection):
     assert isinstance(load_json(), list)
 
     controls = connection.execute(
@@ -37,9 +42,7 @@ def test_json_loader():
     connection.close()
 
 
-def test_create_database():
-    connection = connect_database()
-
+def test_create_database(connection):
     with connection:
         assert isinstance(connection.execute(
             'SELECT * from control').fetchall(), list)
@@ -67,8 +70,7 @@ def test_create_database():
     connection.close()
 
 
-def test_add_control_good():
-    connection = connect_database()
+def test_add_control_good(connection):
     with connection:
         control_func = local_db.add_control(0, 'name', 5)
         value_from_db = connection.execute("SELECT status FROM scandata \
