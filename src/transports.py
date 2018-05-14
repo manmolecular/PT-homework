@@ -75,7 +75,7 @@ class MySQLtransport():
             result = cursor.fetchone()
             return bool(result)
 
-    def check_if_empty_table(self, table_name=None):
+    def check_if_empty_table(self, table_name):
         if not table_name:
             raise TransportError({'table_name': table_name})
         with self.connection.cursor() as cursor:
