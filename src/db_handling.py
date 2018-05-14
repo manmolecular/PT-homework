@@ -4,7 +4,7 @@ import datetime
 import json
 import sqlite3
 from enum import Enum
-from pathlib import PurePosixPath
+from pathlib import Path
 
 json_db = None
 DB_CONTEST = 'controls.json'
@@ -32,7 +32,7 @@ class Status(Enum):
 def load_json():
     global json_db
     if not json_db:
-        with open(str(PurePosixPath(DB_DIR, DB_CONTEST))) as f:
+        with Path(DB_DIR, DB_CONTEST).open() as f:
             json_db = json.load(f)
     return json_db
 
