@@ -1,0 +1,15 @@
+{
+  "host": "localhost",
+  "transports": {
+    "SSH": {
+      "password": "pwd",
+      "login": "root",
+      "port": 22022
+    },
+    "SQL": {
+        "password": "rootpass",
+        "login": "root",
+        "port": 43306
+    }
+  }
+}

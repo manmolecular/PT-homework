@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>System compliance report</title>
+   </head>
+   <body>
+      <article class="A4">
+         <div class="main-page-wrapper">
+            <h1 class="main-title">
+               System compliance report
+            </h1>
+         </div>
+      </article>
+      <article class="A4">
+         <h1 class="main-title">
+            System summary
+         </h1>
+         {% for sys in scan_data %}
+         <h2 class="main-title">
+            Compliance summary
+         </h2>
+         Test run number: {{sys.scanid }} <br>
+         Date of scanning: {{ sys.scandate }} <br>
+         Start time: {{ sys.start_time }} <br>
+         End time: {{ sys.end_time }} <br>
+         Duration of scanning: {{ sys.duration }} <br>
+         Number of tests in database: {{ sys.tests_count }} <br>
+         Tests with not null statuses: {{ sys.not_null_status }} <br>
+
+         <article class="A4">
+         <h2>
+            Passed controls
+         </h2>
+         {% for record in sys.controls %}
+         <article>
+            <h4> Control name: {{ record.name }} </h4>
+            Control id: {{ record.contrid }} <br>
+            Requirements: {{ record.requirement }} <br>
+            Transport: {{ record.transport}} <br>
+            Status: <span class="{{ record.status }}"> {{ record.status }} </span> <br>
+            <p>
+               Description:
+               {{ record.description }}
+            </p>
+         </article>
+         {% endfor %}
+         </article>
+         {% endfor %}
+      </article>
+   </body>
+</html>
