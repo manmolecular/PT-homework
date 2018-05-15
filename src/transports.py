@@ -4,6 +4,7 @@ import socket
 
 import paramiko
 import pymysql.cursors
+import wmi
 
 from get_config import get_config
 
@@ -40,6 +41,31 @@ class TransportIOError(TransportError):
     def __init__(self, error_args):
         super().__init__(error_args)
 
+
+class WMItransport():
+    def __init__(self, computer, user, password):
+        try:
+            self.connect = wmi.WMI(computer=computer,
+                                   user=user,
+                                   password=password)
+        except (wmi.x_access_denied, wmi.x_wmi) as e:
+            raise TransportConnectionError(e) from e
+
+    def wmi_exec(self, command):
+        if not command:
+            raise TransportError({'empty command'})
+        process_id, result = self.connect.Win32_Process.Create(
+            CommandLine=command
+        )
+        return {
+            'process_id': process_id, 
+            'result': result
+        }
+
+    def wmi_query(self, query):
+        if not query:
+            raise TransportError({'empty query'})
+        return self.connect.query(query)
 
 class MySQLtransport():
     def __init__(self, host, port, login, password):
@@ -154,13 +180,22 @@ class SSHtransport():
 
 global_transport_names = {
     'SSH': SSHtransport,
-    'SQL': MySQLtransport
+    'SQL': MySQLtransport,
+    'WMI': WMItransport
 }
 
 
 def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
+    
+    if transport_name == 'WMI':
+        return {
+            'host': json_cfg['transports'][transport_name]['computer'],
+            'port': None,
+            'login': json_cfg['transports'][transport_name]['user'],
+            'password': json_cfg['transports'][transport_name]['password']
+        } 
     return {
         'host': json_cfg['host'],
         'port': json_cfg['transports'][transport_name]['port'],
@@ -181,4 +216,6 @@ def get_transport(transport_name, host=None,
     login = login or default['login']
     password = password or default['password']
 
+    if transport_name == 'WMI':
+        return global_transport_names[transport_name](host, login, password)
     return global_transport_names[transport_name](host, port, login, password)

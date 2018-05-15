@@ -1,15 +1,20 @@
 {
-  "host": "192.168.99.100",
-  "transports": {
-    "SSH": {
-      "password": "pwd",
-      "login": "root",
-      "port": 22022
-    },
-    "SQL": {
-        "password": "rootpass",
-        "login": "root",
-        "port": 43306
+    "host": "192.168.99.101",
+    "transports": {
+        "SSH": {
+          "password": "pwd",
+          "login": "root",
+          "port": 22022
+        },
+        "SQL": {
+            "password": "rootpass",
+            "login": "root",
+            "port": 43306
+        },
+        "WMI": {
+            "computer": "192.168.99.100",
+            "password": "password",
+            "user": "administrator"
+        }
     }
-  }
 }
