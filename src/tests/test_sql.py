@@ -6,15 +6,14 @@ import pytest
 from transports import MySQLtransport, get_defaults, get_transport, \
     TransportError, TransportConnectionError
 
-SQLdefaults = get_defaults('SQL')
-SQL_DATA = 'webmaster@python.org'
-
 
 def setup_module():
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 port=43306,
-                                 password='rootpass',
+    global SQLdefaults
+    SQLdefaults = get_defaults('SQL')
+    connection = pymysql.connect(host=SQLdefaults['host'],
+                                 user=SQLdefaults['login'],
+                                 port=SQLdefaults['port'],
+                                 password=SQLdefaults['password'],
                                  db='def_database',
                                  charset='utf8',
                                  cursorclass=pymysql.cursors.DictCursor,
@@ -88,9 +87,10 @@ def test_get_transport():
 
 
 def test_exec():
+    sql_data = 'webmaster@python.org'
     right_dict = {'password': 'very-secret', 'id': 1}
     result = get_transport('SQL').sql_exec("SELECT `id`, `password`\
-        FROM `users` WHERE `email`=%s", SQL_DATA)[0]
+        FROM `users` WHERE `email`=%s", sql_data)[0]
     assert isinstance(result, dict)
     assert (right_dict == result)
 
