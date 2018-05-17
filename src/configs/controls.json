@@ -1,5 +1,10 @@
 [
   ["000", "File named 'testfile' is present in the root folder on target system", "file must be in folder", "SSH"],
-  ["001", "File named 'unknown' doesn't exists in the root folder on target system", "file not exists", "SSH"],
-  ["002", "Wrong transport for get file", "Transport is wrong", "SSH"]
+  ["001", "All administrators working in admin approve mode", "EnableLUA must be equal 1", "WMI"],
+  ["002", "Enable installer Detection", "EnableInstallerDetection must be equal 1", "WMI"],
+  ["003", "Safe workspace on upper privilegies", "PromptOnSecureDesktop must be equal 1", "WMI"],
+  ["004", "UIAccess rights on safe workplace", "EnableSecureUIAPaths must be equal 1", "WMI"],
+  ["005", "Virtualisation if error on writing", "EnableVirtualization must be equal 1", "WMI"],
+  ["006", "UIAccess without safe workplace", "EnableUIADesktopToggle must be equal 1", "WMI"],
+  ["007", "Admin approvement on admin inner account", "FilterAdministratorToken must be equal 1", "WMI"]
 ]
