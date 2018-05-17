@@ -12,6 +12,7 @@ from get_config import get_config
 FILE_DEFAULT = 'testfile'
 WMI_OUTPUT_DIR = 'C:\\Windows\\temp\\'
 WMI_CMD = 'cmd.exe /c'
+HKLM = 0x80000002
 
 class TransportError(Exception):
     """Base class for error handling"""
@@ -42,6 +43,23 @@ class TransportConnectionError(TransportError):
 class TransportIOError(TransportError):
     def __init__(self, error_args):
         super().__init__(error_args)
+
+
+class WMIregistryTransport():
+    def __init__(self, computer, user, password):
+        try:
+            self.connect = wmi.WMI(computer=computer,
+                                   user=user,
+                                   password=password)
+        except (wmi.x_access_denied, wmi.x_wmi) as e:
+            raise TransportConnectionError(e) from e
+
+    def get_value(self, subkey, valuename):
+        return self.connect.StdRegProv.GetDWORDValue(
+            hDefKey=HKLM,
+            sSubKeyName=subkey,
+            sValueName=valuename
+            )
 
 
 class WMItransport():
@@ -193,7 +211,8 @@ class SSHtransport():
 global_transport_names = {
     'SSH': SSHtransport,
     'SQL': MySQLtransport,
-    'WMI': WMItransport
+    'WMI': WMItransport,
+    'WMIreg': WMIregistryTransport
 }
 
 
@@ -201,12 +220,12 @@ def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
     
-    if transport_name == 'WMI':
+    if transport_name == 'WMI' or transport_name == 'WMIreg':
         return {
-            'host': json_cfg['transports'][transport_name]['computer'],
+            'host': json_cfg['transports']['WMI']['computer'],
             'port': None,
-            'login': json_cfg['transports'][transport_name]['user'],
-            'password': json_cfg['transports'][transport_name]['password']
+            'login': json_cfg['transports']['WMI']['user'],
+            'password': json_cfg['transports']['WMI']['password']
         } 
     return {
         'host': json_cfg['host'],
@@ -228,6 +247,6 @@ def get_transport(transport_name, host=None,
     login = login or default['login']
     password = password or default['password']
 
-    if transport_name == 'WMI':
+    if transport_name == 'WMI' or transport_name == 'WMIreg':
         return global_transport_names[transport_name](host, login, password)
     return global_transport_names[transport_name](host, port, login, password)
