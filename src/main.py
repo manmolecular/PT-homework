@@ -36,9 +36,9 @@ def main():
     duration = end_time - start_time
 
     local_db.add_time(
-        start_time.time().isoformat(timespec='milliseconds'),
-        end_time.time().isoformat(timespec='milliseconds'),
-        duration.total_seconds())
+        start_time.time().isoformat(timespec='seconds'),
+        end_time.time().isoformat(timespec='seconds'),
+        round(duration.total_seconds(), 2))
     make_report()
     local_db.close()
 
