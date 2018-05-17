@@ -45,23 +45,6 @@ class TransportIOError(TransportError):
         super().__init__(error_args)
 
 
-class WMIregistryTransport():
-    def __init__(self, computer, user, password):
-        try:
-            self.connect = wmi.WMI(computer=computer,
-                                   user=user,
-                                   password=password)
-        except (wmi.x_access_denied, wmi.x_wmi) as e:
-            raise TransportConnectionError(e) from e
-
-    def get_value(self, subkey, valuename):
-        return self.connect.StdRegProv.GetDWORDValue(
-            hDefKey=HKLM,
-            sSubKeyName=subkey,
-            sValueName=valuename
-            )
-
-
 class WMItransport():
     def __init__(self, computer, user, password):
         try:
@@ -95,6 +78,18 @@ class WMItransport():
         if not query:
             raise TransportError({'empty query'})
         return self.connect.query(query)
+
+
+class WMIregistryTransport(WMItransport):
+    def __init__(self, computer, user, password):
+        WMItransport.__init__(self, computer, user, password)
+
+    def get_value(self, subkey, valuename):
+        return self.connect.StdRegProv.GetDWORDValue(
+            hDefKey=HKLM,
+            sSubKeyName=subkey,
+            sValueName=valuename
+            )
 
 
 class MySQLtransport():
