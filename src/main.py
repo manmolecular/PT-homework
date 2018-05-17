@@ -38,6 +38,7 @@ def main():
         start_time.time().isoformat(timespec='milliseconds'),
         end_time.time().isoformat(timespec='milliseconds'),
         duration.total_seconds())
+    local_db.add_audit()
     make_report()
     local_db.close()
 

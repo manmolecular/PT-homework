@@ -50,6 +50,11 @@ def get_rendered_html():
                 transport=scandata[2],
                 status=scandata[3]))
 
+        audit_info = connection.execute(
+            'SELECT * FROM audit WHERE id = ?',
+            (str(scandata[5]))).fetchone()
+        print(audit_info)
+
         render_data.append(BasicScanInfo(
             scanid=scan[0],
             scandate=scan[1],

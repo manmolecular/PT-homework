@@ -3,8 +3,10 @@
 import datetime
 import json
 import sqlite3
+import wmi
 from enum import Enum
 from pathlib import Path
+from transports import get_transport
 
 json_db = None
 DB_CONTEST = 'controls.json'
@@ -55,6 +57,15 @@ class SQLiteHandling():
             with self.connection:
                 self.connection.execute(
                     '''
+                    CREATE TABLE IF NOT EXISTS
+                    audit(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        attribute TEXT,
+                        value TEXT)
+                    '''
+                )
+                self.connection.execute(
+                    '''
                     CREATE TABLE IF NOT EXISTS 
                     control(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,9 +84,11 @@ class SQLiteHandling():
                         status TEXT,
                         scansystem_id INTEGER,
                         control_id INTEGER,
+                        audit_id INTEGER,
 
                         FOREIGN KEY (scansystem_id) REFERENCES scansystem(id),
-                        FOREIGN KEY (control_id) REFERENCES control(id))
+                        FOREIGN KEY (control_id) REFERENCES control(id),
+                        FOREIGN KEY (audit_id) REFERENCES audit(id))
                     '''
                 )
                 self.connection.execute(
@@ -115,7 +128,7 @@ class SQLiteHandling():
                     '''
                     INSERT OR REPLACE INTO
                     scandata(name, transport, status, scansystem_id, 
-                    control_id) VALUES (?, ?, ?, ?, ?)''',
+                    control_id, audit_id) VALUES (?, ?, ?, ?, ?, ?)''',
                     (
                         control_name,
                         self.connection.execute(
@@ -124,7 +137,9 @@ class SQLiteHandling():
                         Status(control_status).name,
                         self.connection.execute(
                             'SELECT max(id) FROM scansystem').fetchone()[0],
-                        control_id
+                        control_id,
+                        self.connection.execute(
+                            'SELECT max(id) FROM audit').fetchone()[0]
                     ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
@@ -166,7 +181,38 @@ class SQLiteHandling():
                                               duration, str(test_count),
                                               str(test_count_not_null),
                                               max_id))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
+    def add_audit(self):
+        wmi_connection = get_transport('WMI')
+        query_result_sys = wmi_connection.wmi_query("Select Caption, \
+            OSArchitecture, Version from Win32_OperatingSystem")[0]
+        query_result_group = wmi_connection.wmi_query("Select Name, \
+            DNSHostName, Domain, Workgroup, PartOfDomain \
+            from Win32_ComputerSystem")[0]
+        Domain = query_result_group.Domain
+        Workgroup = query_result_group.Workgroup
+        if Domain == 'False':
+            Domain = None
+        else:
+            Workgroup = None
+        audit_info = {
+            'OSName': query_result_sys.Caption,
+            'OSArchitecture': query_result_sys.OSArchitecture,
+            'OSVersion': query_result_sys.Version,
+            'NetBiosName': query_result_group.Name,
+            'Hostname': query_result_group.DNSHostName,
+            'Domain': Domain,
+            'Workgroup': Workgroup
+        }
+        try:
+            with self.connection:
+                for key in list(audit_info.keys()):
+                    self.connection.execute(
+                        'INSERT OR REPLACE INTO audit'
+                        '(attribute, value) VALUES (?, ?)',
+                        (str(key), audit_info[str(key)]))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
