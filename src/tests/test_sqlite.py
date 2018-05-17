@@ -46,9 +46,11 @@ def test_json_loader(connection):
 def test_create_database(connection):
     control = ['id', 'description', 'requirement', 'transport']
     scandata = ['id', 'name', 'transport', 'status', 'scansystem_id',
-                'control_id']
+                'control_id', 'audit_id']
     scansystem = ['id', 'scandate', 'start_time', 'end_time', 'duration',
                   'tests_count', 'not_null_status']
+    audit = ['id', 'OSName', 'OSArchitecture', 'OSVersion', 
+            'NetBiosName', 'Hostname', 'Domain', 'Workgroup']
 
     control_columns = connection.execute(
         'PRAGMA table_info(control);').fetchall()
@@ -56,12 +58,16 @@ def test_create_database(connection):
         'PRAGMA table_info(scandata);').fetchall()
     scansystem_columns = connection.execute(
         'PRAGMA table_info(scansystem);').fetchall()
+    audit_columns = connection.execute(
+        'PRAGMA table_info(audit);').fetchall()
     for index, controldb in enumerate(control_columns):
         assert (controldb[1] == control[index])
     for index, scandatadb in enumerate(scandata_columns):
         assert (scandatadb[1] == scandata[index])
     for index, scansystemdb in enumerate(scansystem_columns):
         assert (scansystemdb[1] == scansystem[index])
+    for index, auditdb in enumerate(audit_columns):
+        assert (auditdb[1] == audit[index])
     connection.close()
 
 
