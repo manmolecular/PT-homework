@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-from transports import WMIregistryTransport, get_transport, TransportUnknown
 from db_handling import Status
+from transports import get_transport, TransportUnknown
 
 TRANSPORT = 'WMIreg'
 
 
 def main():
     try:
-        reg =  get_transport(TRANSPORT)
+        reg = get_transport(TRANSPORT)
         result = reg.get_value(
             'Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
             'EnableVirtualization')

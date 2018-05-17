@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # SSH transport class based on PT-security lectures
+import re
 import socket
 
 import paramiko
 import pymysql.cursors
 import wmi
-import re
 
 from get_config import get_config
 
@@ -13,6 +13,7 @@ FILE_DEFAULT = 'testfile'
 WMI_OUTPUT_DIR = 'C:\\Windows\\temp\\'
 WMI_CMD = 'cmd.exe /c'
 HKLM = 0x80000002
+
 
 class TransportError(Exception):
     """Base class for error handling"""
@@ -64,15 +65,15 @@ class WMItransport():
         process_startup = self.connect.Win32_ProcessStartup.new()
         process_startup.ShowWindow = 1
         process_id, result = self.connect.Win32_Process.Create(
-            CommandLine=WMI_CMD + ' ' + command + ' ' + 
-            '> ' + WMI_OUTPUT_DIR + filename + '.txt',
+            CommandLine=WMI_CMD + ' ' + command + ' ' +
+                        '> ' + WMI_OUTPUT_DIR + filename + '.txt',
             ProcessStartupInformation=process_startup
         )
 
         return {
-            'process_id': process_id, 
+            'process_id': process_id,
             'result': result
-        }  
+        }
 
     def wmi_query(self, query):
         if not query:
@@ -89,7 +90,7 @@ class WMIregistryTransport(WMItransport):
             hDefKey=HKLM,
             sSubKeyName=subkey,
             sValueName=valuename
-            )[1]
+        )[1]
 
 
 class MySQLtransport():
@@ -214,14 +215,14 @@ global_transport_names = {
 def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
-    
+
     if transport_name == 'WMI' or transport_name == 'WMIreg':
         return {
             'host': json_cfg['transports']['WMI']['computer'],
             'port': None,
             'login': json_cfg['transports']['WMI']['user'],
             'password': json_cfg['transports']['WMI']['password']
-        } 
+        }
     return {
         'host': json_cfg['host'],
         'port': json_cfg['transports'][transport_name]['port'],

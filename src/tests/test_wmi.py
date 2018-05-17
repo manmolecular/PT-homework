@@ -2,10 +2,7 @@
 import pytest
 import wmi
 
-from transports import WMItransport, WMIregistryTransport, \
-    get_transport, TransportError
-
-from transports import WMIregistryTransport
+from transports import get_transport, TransportError
 
 
 def setup_module():
@@ -35,8 +32,9 @@ def test_valid_wmi_query():
             from Win32_ComputerSystem")[0]
     assert isinstance(result, wmi._wmi_object)
 
+
 def registry_get_value():
     result = WMIregistry.get_value(
-    'Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
-    'EnableLUA')
+        'Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
+        'EnableLUA')
     assert ((result is bool(0)) or (result is bool(1)))

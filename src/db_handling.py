@@ -3,9 +3,9 @@
 import datetime
 import json
 import sqlite3
-import wmi
 from enum import Enum
 from pathlib import Path
+
 from transports import get_transport
 
 json_db = None
@@ -219,7 +219,7 @@ class SQLiteHandling():
                     'Hostname, Domain, Workgroup) VALUES '
                     '(?, ?, ?, ?, ?, ?, ?)',
                     (tuple(audit_info.values()))
-                    )
+                )
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
