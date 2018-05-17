@@ -1,5 +1,5 @@
 {
-    "host": "192.168.99.101",
+    "host": "192.168.99.100",
     "transports": {
         "SSH": {
           "password": "pwd",
@@ -12,7 +12,7 @@
             "port": 43306
         },
         "WMI": {
-            "computer": "192.168.99.100",
+            "computer": "192.168.99.101",
             "password": "password",
             "user": "administrator"
         }
