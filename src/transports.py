@@ -12,7 +12,7 @@ FILE_DEFAULT = 'testfile'
 
 
 class TransportError(Exception):
-    """Classes for error handling"""
+    """Base class for error handling"""
 
     def __init__(self, error_args):
         super().__init__(self)
@@ -54,18 +54,23 @@ class WMItransport():
     def wmi_exec(self, command):
         if not command:
             raise TransportError({'empty command'})
+        process_startup = self.connect.Win32_ProcessStartup.new()
+        process_startup.ShowWindow = 1
         process_id, result = self.connect.Win32_Process.Create(
-            CommandLine=command
+            CommandLine=command,
+            ProcessStartupInformation=process_startup
         )
+
         return {
             'process_id': process_id, 
             'result': result
-        }
+        }  
 
     def wmi_query(self, query):
         if not query:
             raise TransportError({'empty query'})
         return self.connect.query(query)
+
 
 class MySQLtransport():
     def __init__(self, host, port, login, password):
