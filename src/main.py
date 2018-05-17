@@ -28,6 +28,7 @@ def main():
     start_time = datetime.now()
 
     local_db.create_db()
+    local_db.add_audit()
     local_db.initial_scan()
     import_scripts()
 
@@ -38,7 +39,6 @@ def main():
         start_time.time().isoformat(timespec='milliseconds'),
         end_time.time().isoformat(timespec='milliseconds'),
         duration.total_seconds())
-    local_db.add_audit()
     make_report()
     local_db.close()
 

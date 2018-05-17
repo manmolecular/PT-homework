@@ -60,8 +60,13 @@ class SQLiteHandling():
                     CREATE TABLE IF NOT EXISTS
                     audit(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        attribute TEXT,
-                        value TEXT)
+                        OSName TEXT,
+                        OSArchitecture TEXT,
+                        OSVersion TEXT,
+                        NetBiosName TEXT,
+                        Hostname TEXT,
+                        Domain TEXT,
+                        Workgroup TEXT)
                     '''
                 )
                 self.connection.execute(
@@ -208,11 +213,13 @@ class SQLiteHandling():
         }
         try:
             with self.connection:
-                for key in list(audit_info.keys()):
-                    self.connection.execute(
-                        'INSERT OR REPLACE INTO audit'
-                        '(attribute, value) VALUES (?, ?)',
-                        (str(key), audit_info[str(key)]))
+                self.connection.execute(
+                    'INSERT OR REPLACE INTO audit'
+                    '(OSName, OSArchitecture, OSVersion, NetBiosName,'
+                    'Hostname, Domain, Workgroup) VALUES '
+                    '(?, ?, ?, ?, ?, ?, ?)',
+                    (tuple(audit_info.values()))
+                    )
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 

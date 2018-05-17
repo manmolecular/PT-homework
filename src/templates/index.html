@@ -20,13 +20,23 @@
          <h2 class="main-title">
             Compliance summary
          </h2>
-         Test run number: {{sys.scanid }} <br>
+         Test run number: {{ sys.scanid }} <br>
          Date of scanning: {{ sys.scandate }} <br>
          Start time: {{ sys.start_time }} <br>
          End time: {{ sys.end_time }} <br>
          Duration of scanning: {{ sys.duration }} <br>
          Number of tests in database: {{ sys.tests_count }} <br>
          Tests with not null statuses: {{ sys.not_null_status }} <br>
+         <h2 class="main-title">
+            System info
+         </h2>
+         OS name: {{ sys.wmi_sys_info.OSname }} <br>
+         OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
+         OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
+         Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
+         Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
+         Domain: {{ sys.wmi_sys_info.Domain }} <br>
+         Workgroup: {{ sys.wmi_sys_info.Workgroup }}
 
          <article class="A4">
          <h2>
