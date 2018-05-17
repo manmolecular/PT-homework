@@ -89,7 +89,7 @@ class WMIregistryTransport(WMItransport):
             hDefKey=HKLM,
             sSubKeyName=subkey,
             sValueName=valuename
-            )
+            )[1]
 
 
 class MySQLtransport():
