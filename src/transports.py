@@ -5,11 +5,13 @@ import socket
 import paramiko
 import pymysql.cursors
 import wmi
+import re
 
 from get_config import get_config
 
 FILE_DEFAULT = 'testfile'
-
+WMI_OUTPUT_DIR = 'C:\\Windows\\temp\\'
+WMI_CMD = 'cmd.exe /c'
 
 class TransportError(Exception):
     """Base class for error handling"""
@@ -54,10 +56,15 @@ class WMItransport():
     def wmi_exec(self, command):
         if not command:
             raise TransportError({'empty command'})
+
+        """get filename from command without special characters"""
+        filename = re.sub('[!@#$., ]', '', command)
+
         process_startup = self.connect.Win32_ProcessStartup.new()
         process_startup.ShowWindow = 1
         process_id, result = self.connect.Win32_Process.Create(
-            CommandLine=command,
+            CommandLine=WMI_CMD + ' ' + command + ' ' + 
+            '> ' + WMI_OUTPUT_DIR + filename + '.txt',
             ProcessStartupInformation=process_startup
         )
 
