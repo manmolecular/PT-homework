@@ -204,6 +204,7 @@ class SSHtransport():
         self.client.close()
 
 
+wmi_case = ['WMI', 'WMIreg']
 global_transport_names = {
     'SSH': SSHtransport,
     'SQL': MySQLtransport,
@@ -216,12 +217,12 @@ def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
 
-    if transport_name == 'WMI' or transport_name == 'WMIreg':
+    if transport_name in wmi_case:
         return {
-            'host': json_cfg['transports']['WMI']['computer'],
+            'host': json_cfg['transports'][wmi_case[0]]['computer'],
             'port': None,
-            'login': json_cfg['transports']['WMI']['user'],
-            'password': json_cfg['transports']['WMI']['password']
+            'login': json_cfg['transports'][wmi_case[0]]['user'],
+            'password': json_cfg['transports'][wmi_case[0]]['password']
         }
     return {
         'host': json_cfg['host'],
@@ -243,6 +244,6 @@ def get_transport(transport_name, host=None,
     login = login or default['login']
     password = password or default['password']
 
-    if transport_name == 'WMI' or transport_name == 'WMIreg':
+    if transport_name in wmi_case:
         return global_transport_names[transport_name](host, login, password)
     return global_transport_names[transport_name](host, port, login, password)
