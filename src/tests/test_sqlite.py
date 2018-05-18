@@ -73,7 +73,7 @@ def test_create_database(connection):
 
 def test_add_control_good(connection):
     with connection:
-        control_func = local_db.add_control(0, 'name', 5)
+        control_func = local_db.add_control(0, 'pytest_temp_value', 5)
         value_from_db = connection.execute("SELECT status FROM scandata \
             WHERE id = (SELECT MAX(id) from scandata)").fetchone()[0]
         value_from_enum = Status(5).name

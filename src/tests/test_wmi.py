@@ -26,15 +26,16 @@ def test_wmi_wo_query():
         WMIconnect.wmi_query('')
 
 
-def test_valid_wmi_query():
+def test_return_object_wmi_query():
     result = WMIconnect.wmi_query("Select Name, \
             DNSHostName, Domain, Workgroup, PartOfDomain \
             from Win32_ComputerSystem")[0]
     assert isinstance(result, wmi._wmi_object)
 
 
-def registry_get_value():
+def test_registry_get_value():
     result = WMIregistry.get_value(
         'Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
         'EnableLUA')
-    assert ((result is bool(0)) or (result is bool(1)))
+    accepted_values = [0, 1]
+    assert result in accepted_values
