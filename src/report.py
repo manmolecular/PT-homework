@@ -65,14 +65,17 @@ def get_rendered_html():
             'SELECT attribute, value FROM audit WHERE scansystem_id = ?',
             (str(scan[0]))).fetchall())
 
-        audit = WMIScanInfo(
-            OSname=audit_query['OSName'],
-            OSArchitecture=audit_query['OSArchitecture'],
-            OSVersion=audit_query['OSVersion'],
-            NetBiosName=audit_query['NetBiosName'],
-            Hostname=audit_query['Hostname'],
-            Domain=audit_query['Domain'],
-            Workgroup=audit_query['Workgroup'])
+        if audit_query:
+            audit = WMIScanInfo(
+                OSname=audit_query['OSName'],
+                OSArchitecture=audit_query['OSArchitecture'],
+                OSVersion=audit_query['OSVersion'],
+                NetBiosName=audit_query['NetBiosName'],
+                Hostname=audit_query['Hostname'],
+                Domain=audit_query['Domain'],
+                Workgroup=audit_query['Workgroup'])
+        else:
+            audit = None
 
         render_data.append(BasicScanInfo(
             scanid=scan[0],
