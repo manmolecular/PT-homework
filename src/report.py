@@ -37,6 +37,7 @@ class WMIScanInfo(NamedTuple):
     Hostname: str
     Domain: str
     Workgroup: str
+    PartOfDomain: str
 
 
 def get_rendered_html():
@@ -73,7 +74,8 @@ def get_rendered_html():
                 NetBiosName=audit_query['NetBiosName'],
                 Hostname=audit_query['Hostname'],
                 Domain=audit_query['Domain'],
-                Workgroup=audit_query['Workgroup'])
+                Workgroup=audit_query['Workgroup'],
+                PartOfDomain=audit_query['PartOfDomain'])
         else:
             audit = None
 

@@ -36,8 +36,13 @@
          OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
          Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
          Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
-         Domain: {{ sys.wmi_sys_info.Domain }} <br>
-         Workgroup: {{ sys.wmi_sys_info.Workgroup }}
+         {% if sys.wmi_sys_info.Domain != None %}
+            Domain: {{ sys.wmi_sys_info.Domain }} <br>
+         {% endif %}
+         {% if sys.wmi_sys_info.Workgroup != None %}
+            Workgroup: {{ sys.wmi_sys_info.Workgroup }} <br>
+         {% endif %}
+         Part Of Domain: {{ sys.wmi_sys_info.PartOfDomain }} <br>
          {% endif %}
          {% if sys.wmi_sys_info == None %}
          WMI service is not available

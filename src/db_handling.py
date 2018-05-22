@@ -199,7 +199,7 @@ class SQLiteHandling():
         Domain = query_result_group.Domain
         Workgroup = query_result_group.Workgroup
 
-        if Domain == 'False':
+        if query_result_group.PartOfDomain == False:
             Domain = None
         else:
             Workgroup = None
@@ -211,7 +211,8 @@ class SQLiteHandling():
             'NetBiosName': query_result_group.Name,
             'Hostname': query_result_group.DNSHostName,
             'Domain': Domain,
-            'Workgroup': Workgroup
+            'Workgroup': Workgroup, 
+            'PartOfDomain': query_result_group.PartOfDomain
         }
 
         try:
