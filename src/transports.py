@@ -76,8 +76,6 @@ class WMItransport():
         }
 
     def wmi_query(self, query):
-        if not query:
-            raise TransportError({'empty query'})
         return self.connect.query(query)
 
 

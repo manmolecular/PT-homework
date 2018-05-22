@@ -21,11 +21,6 @@ def test_valid_command_status():
     assert (bool(WMIconnect.wmi_exec('ipconfig')['result']) == False)
 
 
-def test_wmi_wo_query():
-    with pytest.raises(TransportError):
-        WMIconnect.wmi_query('')
-
-
 def test_return_object_wmi_query():
     result = WMIconnect.wmi_query("Select Name, \
             DNSHostName, Domain, Workgroup, PartOfDomain \
