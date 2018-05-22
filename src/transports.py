@@ -56,9 +56,6 @@ class WMItransport():
             raise TransportConnectionError(e) from e
 
     def wmi_exec(self, command):
-        if not command:
-            raise TransportError({'empty command'})
-
         """get filename from command without special characters"""
         filename = re.sub('[!@#$., ]', '', command)
 

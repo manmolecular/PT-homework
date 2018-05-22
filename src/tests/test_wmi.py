@@ -12,11 +12,6 @@ def setup_module():
     WMIregistry = get_transport('WMIreg')
 
 
-def test_wmi_exec_wo_command():
-    with pytest.raises(TransportError):
-        WMIconnect.wmi_exec('')
-
-
 def test_valid_command_status():
     assert (bool(WMIconnect.wmi_exec('ipconfig')['result']) == False)
 
