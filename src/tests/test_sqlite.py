@@ -49,8 +49,7 @@ def test_create_database(connection):
                 'control_id', 'audit_id']
     scansystem = ['id', 'scandate', 'start_time', 'end_time', 'duration',
                   'tests_count', 'not_null_status']
-    audit = ['id', 'OSName', 'OSArchitecture', 'OSVersion',
-             'NetBiosName', 'Hostname', 'Domain', 'Workgroup']
+    audit = ['id', 'attribute', 'value', 'scansystem_id']
 
     control_columns = connection.execute(
         'PRAGMA table_info(control);').fetchall()
