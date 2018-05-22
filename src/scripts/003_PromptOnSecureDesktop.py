@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from db_handling import Status
-from transports import get_transport, TransportUnknown
+from transports import get_transport, TransportUnknown, TransportConnectionError
 
 TRANSPORT = 'WMIreg'
 
@@ -11,6 +11,8 @@ def main():
         result = reg.get_value(
             'Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System',
             'PromptOnSecureDesktop')
+    except TransportConnectionError:
+        return Status.STATUS_NOT_APPLICABLE
     except TransportUnknown:
         return Status.STATUS_ERROR
     if result == 1:
