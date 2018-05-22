@@ -46,7 +46,7 @@ def test_json_loader(connection):
 def test_create_database(connection):
     control = ['id', 'description', 'requirement', 'transport']
     scandata = ['id', 'name', 'transport', 'status', 'scansystem_id',
-                'control_id', 'audit_id']
+                'control_id']
     scansystem = ['id', 'scandate', 'start_time', 'end_time', 'duration',
                   'tests_count', 'not_null_status']
     audit = ['id', 'attribute', 'value', 'scansystem_id']
@@ -59,14 +59,16 @@ def test_create_database(connection):
         'PRAGMA table_info(scansystem);').fetchall()
     audit_columns = connection.execute(
         'PRAGMA table_info(audit);').fetchall()
-    for index, controldb in enumerate(control_columns):
-        assert (controldb[1] == control[index])
-    for index, scandatadb in enumerate(scandata_columns):
-        assert (scandatadb[1] == scandata[index])
-    for index, scansystemdb in enumerate(scansystem_columns):
-        assert (scansystemdb[1] == scansystem[index])
-    for index, auditdb in enumerate(audit_columns):
-        assert (auditdb[1] == audit[index])
+
+    test_list = [control, scandata, scansystem, audit]
+    db_list = [control_columns, scandata_columns, 
+        scansystem_columns, audit_columns]
+
+    for test_value, db_value in zip (test_list, db_list):
+        assert len(test_value) == len(db_value)
+        for a, b in zip (test_value, db_value):
+            assert a == b[1]
+            
     connection.close()
 
 
