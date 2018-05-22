@@ -6,7 +6,7 @@ import sqlite3
 from enum import Enum
 from pathlib import Path
 
-from transports import get_transport
+from transports import get_transport, TransportConnectionError
 
 json_db = None
 DB_CONTEST = 'controls.json'
@@ -163,7 +163,7 @@ class SQLiteHandling():
             with self.connection:
                 test_count = self.connection.execute(
                     'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?',
-                    str(max_id)).fetchone()[0]
+                    str(max_id)).fetchone()
                 test_count_not_null = self.connection.execute(
                     'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? \
                     AND status IS NOT NULL', str(max_id)).fetchone()[0]
@@ -186,7 +186,12 @@ class SQLiteHandling():
             raise DatabaseError(e.args[0])
 
     def add_audit(self):
-        wmi_connection = get_transport('WMI')
+        try:
+            wmi_connection = get_transport('WMI')
+        except TransportConnectionError as e:
+            print('Warning: Can not connect to remote ' + 
+                'WMI-host - WMI controls will be skipped')
+            return 0
         query_result_sys = wmi_connection.wmi_query("Select Caption, \
             OSArchitecture, Version from Win32_OperatingSystem")[0]
         query_result_group = wmi_connection.wmi_query("Select Name, \
