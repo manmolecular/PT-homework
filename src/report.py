@@ -61,18 +61,18 @@ def get_rendered_html():
                 transport=scandata[2],
                 status=scandata[3]))
 
-        audit_query = connection.execute(
-            'SELECT * FROM audit WHERE id = ?',
-            (str(scandata[6]))).fetchone()
+        audit_query = dict(connection.execute(
+            'SELECT attribute, value FROM audit WHERE scansystem_id = ?',
+            (str(scan[0]))).fetchall())
 
         audit = WMIScanInfo(
-            OSname=audit_query[1],
-            OSArchitecture=audit_query[2],
-            OSVersion=audit_query[3],
-            NetBiosName=audit_query[4],
-            Hostname=audit_query[5],
-            Domain=audit_query[6],
-            Workgroup=audit_query[7])
+            OSname=audit_query['OSName'],
+            OSArchitecture=audit_query['OSArchitecture'],
+            OSVersion=audit_query['OSVersion'],
+            NetBiosName=audit_query['NetBiosName'],
+            Hostname=audit_query['Hostname'],
+            Domain=audit_query['Domain'],
+            Workgroup=audit_query['Workgroup'])
 
         render_data.append(BasicScanInfo(
             scanid=scan[0],

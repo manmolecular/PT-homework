@@ -28,8 +28,8 @@ def main():
     start_time = datetime.now()
 
     local_db.create_db()
-    local_db.add_audit()
     local_db.initial_scan()
+    local_db.add_audit()
     import_scripts()
 
     end_time = datetime.now()

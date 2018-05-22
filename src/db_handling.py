@@ -57,20 +57,6 @@ class SQLiteHandling():
             with self.connection:
                 self.connection.execute(
                     '''
-                    CREATE TABLE IF NOT EXISTS
-                    audit(
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        OSName TEXT,
-                        OSArchitecture TEXT,
-                        OSVersion TEXT,
-                        NetBiosName TEXT,
-                        Hostname TEXT,
-                        Domain TEXT,
-                        Workgroup TEXT)
-                    '''
-                )
-                self.connection.execute(
-                    '''
                     CREATE TABLE IF NOT EXISTS 
                     control(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,11 +75,9 @@ class SQLiteHandling():
                         status TEXT,
                         scansystem_id INTEGER,
                         control_id INTEGER,
-                        audit_id INTEGER,
 
                         FOREIGN KEY (scansystem_id) REFERENCES scansystem(id),
-                        FOREIGN KEY (control_id) REFERENCES control(id),
-                        FOREIGN KEY (audit_id) REFERENCES audit(id))
+                        FOREIGN KEY (control_id) REFERENCES control(id))
                     '''
                 )
                 self.connection.execute(
@@ -108,6 +92,18 @@ class SQLiteHandling():
                         tests_count INTEGER,
                         not_null_status INTEGER)
                     ''')
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    audit(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        attribute TEXT,
+                        value TEXT,
+                        scansystem_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id))
+                    '''
+                )
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -129,22 +125,22 @@ class SQLiteHandling():
     def add_control(self, control_id, control_name, control_status):
         try:
             with self.connection:
+                current_scan =  self.connection.execute(
+                    'SELECT max(id) FROM scansystem').fetchone()[0]
+                print('Current: ' + control_name)
                 self.connection.execute(
                     '''
                     INSERT OR REPLACE INTO
                     scandata(name, transport, status, scansystem_id, 
-                    control_id, audit_id) VALUES (?, ?, ?, ?, ?, ?)''',
+                    control_id) VALUES (?, ?, ?, ?, ?)''',
                     (
                         control_name,
                         self.connection.execute(
                             'SELECT transport FROM control WHERE id = ?',
                             str(control_id)).fetchone()[0],
                         Status(control_status).name,
-                        self.connection.execute(
-                            'SELECT max(id) FROM scansystem').fetchone()[0],
-                        control_id,
-                        self.connection.execute(
-                            'SELECT max(id) FROM audit').fetchone()[0]
+                        current_scan,
+                        control_id
                     ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
@@ -198,10 +194,12 @@ class SQLiteHandling():
             from Win32_ComputerSystem")[0]
         Domain = query_result_group.Domain
         Workgroup = query_result_group.Workgroup
+
         if Domain == 'False':
             Domain = None
         else:
             Workgroup = None
+
         audit_info = {
             'OSName': query_result_sys.Caption,
             'OSArchitecture': query_result_sys.OSArchitecture,
@@ -211,15 +209,20 @@ class SQLiteHandling():
             'Domain': Domain,
             'Workgroup': Workgroup
         }
+        
         try:
             with self.connection:
-                self.connection.execute(
-                    'INSERT OR REPLACE INTO audit'
-                    '(OSName, OSArchitecture, OSVersion, NetBiosName,'
-                    'Hostname, Domain, Workgroup) VALUES '
-                    '(?, ?, ?, ?, ?, ?, ?)',
-                    (tuple(audit_info.values()))
-                )
+                current_scan = self.connection.execute(
+                    'SELECT max(id) FROM scansystem').fetchone()[0]
+                for key in audit_info:
+                    self.connection.execute(
+                        'INSERT OR REPLACE INTO audit'
+                        '(attribute, value, scansystem_id) VALUES (?, ?, ?)',
+                        (
+                            key, 
+                            audit_info[key],
+                            current_scan
+                        ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
