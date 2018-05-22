@@ -12,9 +12,9 @@
             "port": 43306
         },
         "WMI": {
-            "computer": "192.168.99.100",
             "password": "password",
-            "user": "administrator"
+            "login": "administrator",
+            "port":""
         }
     }
 }
