@@ -47,10 +47,10 @@ class TransportIOError(TransportError):
 
 
 class WMItransport():
-    def __init__(self, computer, user, password):
+    def __init__(self, host, port, login, password):
         try:
-            self.connect = wmi.WMI(computer=computer,
-                                   user=user,
+            self.connect = wmi.WMI(computer=host,
+                                   user=login,
                                    password=password)
         except (wmi.x_access_denied, wmi.x_wmi) as e:
             raise TransportConnectionError(e) from e
@@ -77,8 +77,8 @@ class WMItransport():
 
 
 class WMIregistryTransport(WMItransport):
-    def __init__(self, computer, user, password):
-        WMItransport.__init__(self, computer, user, password)
+    def __init__(self, host, port, login, password):
+        WMItransport.__init__(self, host, port, login, password)
 
     def get_value(self, subkey, valuename):
         return self.connect.StdRegProv.GetDWORDValue(
@@ -199,7 +199,6 @@ class SSHtransport():
         self.client.close()
 
 
-wmi_case = ['WMI', 'WMIreg']
 global_transport_names = {
     'SSH': SSHtransport,
     'SQL': MySQLtransport,
@@ -212,13 +211,6 @@ def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
 
-    if transport_name in wmi_case:
-        return {
-            'host': json_cfg['transports'][wmi_case[0]]['computer'],
-            'port': None,
-            'login': json_cfg['transports'][wmi_case[0]]['user'],
-            'password': json_cfg['transports'][wmi_case[0]]['password']
-        }
     return {
         'host': json_cfg['host'],
         'port': json_cfg['transports'][transport_name]['port'],
@@ -239,6 +231,4 @@ def get_transport(transport_name, host=None,
     login = login or default['login']
     password = password or default['password']
 
-    if transport_name in wmi_case:
-        return global_transport_names[transport_name](host, login, password)
     return global_transport_names[transport_name](host, port, login, password)
