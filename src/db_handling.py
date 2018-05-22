@@ -212,7 +212,7 @@ class SQLiteHandling():
             'Hostname': query_result_group.DNSHostName,
             'Domain': Domain,
             'Workgroup': Workgroup,
-            'PartOfDomain': query_result_group.PartOfDomain
+            'PartOfDomain': bool(query_result_group.PartOfDomain)
         }
 
         try:
