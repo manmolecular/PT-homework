@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import wmi
-
 import pytest
+import wmi
 
 from transports import get_transport
 
@@ -9,6 +8,7 @@ from transports import get_transport
 @pytest.fixture
 def WMIconnect():
     return get_transport('WMI')
+
 
 @pytest.fixture
 def WMIregistry():

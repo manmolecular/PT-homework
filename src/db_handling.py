@@ -211,7 +211,7 @@ class SQLiteHandling():
             'NetBiosName': query_result_group.Name,
             'Hostname': query_result_group.DNSHostName,
             'Domain': Domain,
-            'Workgroup': Workgroup, 
+            'Workgroup': Workgroup,
             'PartOfDomain': query_result_group.PartOfDomain
         }
 

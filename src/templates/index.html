@@ -1,71 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <title>System compliance report</title>
-   </head>
-   <body>
-      <article class="A4">
-         <div class="main-page-wrapper">
-            <h1 class="main-title">
-               System compliance report
-            </h1>
-         </div>
-      </article>
-      <article class="A4">
-         <h1 class="main-title">
-            System summary
-         </h1>
-         {% for sys in scan_data %}
-         <h2 class="main-title">
-            Compliance summary
-         </h2>
-         Test run number: {{ sys.scanid }} <br>
-         Date of scanning: {{ sys.scandate }} <br>
-         Start time: {{ sys.start_time }} <br>
-         End time: {{ sys.end_time }} <br>
-         Duration of scanning: {{ sys.duration }} <br>
-         Number of tests in database: {{ sys.tests_count }} <br>
-         Tests with not null statuses: {{ sys.not_null_status }} <br>
-         <h2 class="main-title">
-            System info
-         </h2>
-         {% if sys.wmi_sys_info != None %}
-         OS name: {{ sys.wmi_sys_info.OSname }} <br>
-         OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
-         OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
-         Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
-         Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
-         {% if sys.wmi_sys_info.Domain != None %}
-            Domain: {{ sys.wmi_sys_info.Domain }} <br>
-         {% endif %}
-         {% if sys.wmi_sys_info.Workgroup != None %}
-            Workgroup: {{ sys.wmi_sys_info.Workgroup }} <br>
-         {% endif %}
-         Part Of Domain: {{ sys.wmi_sys_info.PartOfDomain }} <br>
-         {% endif %}
-         {% if sys.wmi_sys_info == None %}
-         WMI service is not available
-         {% endif %}
-         <article class="A4">
-         <h2>
+<head>
+    <meta charset="UTF-8">
+    <title>System compliance report</title>
+</head>
+<body>
+<article class="A4">
+    <div class="main-page-wrapper">
+        <h1 class="main-title">
+            System compliance report
+        </h1>
+    </div>
+</article>
+<article class="A4">
+    <h1 class="main-title">
+        System summary
+    </h1>
+    {% for sys in scan_data %}
+    <h2 class="main-title">
+        Compliance summary
+    </h2>
+    Test run number: {{ sys.scanid }} <br>
+    Date of scanning: {{ sys.scandate }} <br>
+    Start time: {{ sys.start_time }} <br>
+    End time: {{ sys.end_time }} <br>
+    Duration of scanning: {{ sys.duration }} <br>
+    Number of tests in database: {{ sys.tests_count }} <br>
+    Tests with not null statuses: {{ sys.not_null_status }} <br>
+    <h2 class="main-title">
+        System info
+    </h2>
+    {% if sys.wmi_sys_info != None %}
+    OS name: {{ sys.wmi_sys_info.OSname }} <br>
+    OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
+    OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
+    Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
+    Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
+    {% if sys.wmi_sys_info.Domain != None %}
+    Domain: {{ sys.wmi_sys_info.Domain }} <br>
+    {% endif %}
+    {% if sys.wmi_sys_info.Workgroup != None %}
+    Workgroup: {{ sys.wmi_sys_info.Workgroup }} <br>
+    {% endif %}
+    Part Of Domain: {{ sys.wmi_sys_info.PartOfDomain }} <br>
+    {% endif %}
+    {% if sys.wmi_sys_info == None %}
+    WMI service is not available
+    {% endif %}
+    <article class="A4">
+        <h2>
             Passed controls
-         </h2>
-         {% for record in sys.controls %}
-         <article>
+        </h2>
+        {% for record in sys.controls %}
+        <article>
             <h4> Control name: {{ record.name }} </h4>
             Control id: {{ record.contrid }} <br>
             Requirements: {{ record.requirement }} <br>
             Transport: {{ record.transport}} <br>
             Status: <span class="{{ record.status }}"> {{ record.status }} </span> <br>
             <p>
-               Description:
-               {{ record.description }}
+                Description:
+                {{ record.description }}
             </p>
-         </article>
-         {% endfor %}
-         </article>
-         {% endfor %}
-      </article>
-   </body>
+        </article>
+        {% endfor %}
+    </article>
+    {% endfor %}
+</article>
+</body>
 </html>
