@@ -13,7 +13,7 @@ def main():
             'EnableSecureUIAPaths')
     except TransportUnknown:
         return Status.STATUS_ERROR
-    if bool(result):
+    if result == 1:
         return Status.STATUS_COMPLIANT
     else:
         return Status.STATUS_NOT_COMPLIANT
