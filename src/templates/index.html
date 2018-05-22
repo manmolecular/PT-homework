@@ -30,6 +30,7 @@
          <h2 class="main-title">
             System info
          </h2>
+         {% if sys.wmi_sys_info != None %}
          OS name: {{ sys.wmi_sys_info.OSname }} <br>
          OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
          OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
@@ -37,7 +38,10 @@
          Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
          Domain: {{ sys.wmi_sys_info.Domain }} <br>
          Workgroup: {{ sys.wmi_sys_info.Workgroup }}
-
+         {% endif %}
+         {% if sys.wmi_sys_info == None %}
+         WMI service is not available
+         {% endif %}
          <article class="A4">
          <h2>
             Passed controls
