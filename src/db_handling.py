@@ -163,7 +163,7 @@ class SQLiteHandling():
             with self.connection:
                 test_count = self.connection.execute(
                     'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ?',
-                    str(max_id)).fetchone()
+                    str(max_id)).fetchone()[0]
                 test_count_not_null = self.connection.execute(
                     'SELECT COUNT(*) FROM scandata WHERE scansystem_id = ? \
                     AND status IS NOT NULL', str(max_id)).fetchone()[0]
