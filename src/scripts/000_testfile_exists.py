@@ -12,6 +12,7 @@ def main():
         transport_instance = get_transport(TRANSPORT)
         func_status = transport_instance.get_file(FILE_NAME)
     except TransportConnectionError:
+        print('Warning: Can not connect to SSH')
         return Status.STATUS_NOT_APPLICABLE
     except TransportUnknown:
         return Status.STATUS_ERROR
