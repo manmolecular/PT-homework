@@ -189,8 +189,7 @@ class SQLiteHandling():
         try:
             wmi_connection = get_transport('WMI')
         except TransportConnectionError as e:
-            print('Warning: Can not connect to remote ' + 
-                'WMI-host - WMI controls will be skipped')
+            print('Warning: Can not connect to remote WMI-host')
             return 0
         query_result_sys = wmi_connection.wmi_query("Select Caption, \
             OSArchitecture, Version from Win32_OperatingSystem")[0]
