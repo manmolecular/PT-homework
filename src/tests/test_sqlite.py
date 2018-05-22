@@ -61,14 +61,14 @@ def test_create_database(connection):
         'PRAGMA table_info(audit);').fetchall()
 
     test_list = [control, scandata, scansystem, audit]
-    db_list = [control_columns, scandata_columns, 
-        scansystem_columns, audit_columns]
+    db_list = [control_columns, scandata_columns,
+               scansystem_columns, audit_columns]
 
-    for test_value, db_value in zip (test_list, db_list):
+    for test_value, db_value in zip(test_list, db_list):
         assert len(test_value) == len(db_value)
-        for a, b in zip (test_value, db_value):
+        for a, b in zip(test_value, db_value):
             assert a == b[1]
-            
+
     connection.close()
 
 

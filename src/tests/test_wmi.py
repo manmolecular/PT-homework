@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import pytest
 import wmi
 
-from transports import get_transport, TransportError
+from transports import get_transport
 
 
 def setup_module():

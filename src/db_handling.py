@@ -125,7 +125,7 @@ class SQLiteHandling():
     def add_control(self, control_id, control_name, control_status):
         try:
             with self.connection:
-                current_scan =  self.connection.execute(
+                current_scan = self.connection.execute(
                     'SELECT max(id) FROM scansystem').fetchone()[0]
                 print('Current: ' + control_name)
                 self.connection.execute(
@@ -209,7 +209,7 @@ class SQLiteHandling():
             'Domain': Domain,
             'Workgroup': Workgroup
         }
-        
+
         try:
             with self.connection:
                 current_scan = self.connection.execute(
@@ -219,7 +219,7 @@ class SQLiteHandling():
                         'INSERT OR REPLACE INTO audit'
                         '(attribute, value, scansystem_id) VALUES (?, ?, ?)',
                         (
-                            key, 
+                            key,
                             audit_info[key],
                             current_scan
                         ))
