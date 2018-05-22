@@ -9,6 +9,7 @@ src/sample_report.pdf
 src/ntest.py
 src/delete.sh
 src/.idea/
+src/wmitest.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

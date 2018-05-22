@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 # SSH transport class based on PT-security lectures
+import re
 import socket
 
 import paramiko
 import pymysql.cursors
+import wmi
 
 from get_config import get_config
 
 FILE_DEFAULT = 'testfile'
+WMI_OUTPUT_DIR = 'C:\\Windows\\temp\\'
+WMI_CMD = 'cmd.exe /c'
+HKLM = 0x80000002
 
 
 class TransportError(Exception):
-    """Classes for error handling"""
+    """Base class for error handling"""
 
     def __init__(self, error_args):
         super().__init__(self)
@@ -39,6 +44,48 @@ class TransportConnectionError(TransportError):
 class TransportIOError(TransportError):
     def __init__(self, error_args):
         super().__init__(error_args)
+
+
+class WMItransport():
+    def __init__(self, host, port, login, password):
+        try:
+            self.connect = wmi.WMI(computer=host,
+                                   user=login,
+                                   password=password)
+        except (wmi.x_access_denied, wmi.x_wmi) as e:
+            raise TransportConnectionError(e) from e
+
+    def wmi_exec(self, command):
+        """get filename from command without special characters"""
+        filename = re.sub('[!@#$., ]', '', command)
+
+        process_startup = self.connect.Win32_ProcessStartup.new()
+        process_startup.ShowWindow = 1
+        process_id, result = self.connect.Win32_Process.Create(
+            CommandLine=WMI_CMD + ' ' + command + ' ' +
+                        '> ' + WMI_OUTPUT_DIR + filename + '.txt',
+            ProcessStartupInformation=process_startup
+        )
+
+        return {
+            'process_id': process_id,
+            'result': result
+        }
+
+    def wmi_query(self, query):
+        return self.connect.query(query)
+
+
+class WMIregistryTransport(WMItransport):
+    def __init__(self, host, port, login, password):
+        WMItransport.__init__(self, host, port, login, password)
+
+    def get_value(self, subkey, valuename):
+        return self.connect.StdRegProv.GetDWORDValue(
+            hDefKey=HKLM,
+            sSubKeyName=subkey,
+            sValueName=valuename
+        )[1]
 
 
 class MySQLtransport():
@@ -154,13 +201,16 @@ class SSHtransport():
 
 global_transport_names = {
     'SSH': SSHtransport,
-    'SQL': MySQLtransport
+    'SQL': MySQLtransport,
+    'WMI': WMItransport,
+    'WMIreg': WMIregistryTransport
 }
 
 
 def get_defaults(transport_name):
     """Get defaults from config file"""
     json_cfg = get_config()
+
     return {
         'host': json_cfg['host'],
         'port': json_cfg['transports'][transport_name]['port'],

@@ -6,6 +6,8 @@ import sqlite3
 from enum import Enum
 from pathlib import Path
 
+from transports import get_transport, TransportConnectionError
+
 json_db = None
 DB_CONTEST = 'controls.json'
 DB_DIR = 'configs'
@@ -90,6 +92,18 @@ class SQLiteHandling():
                         tests_count INTEGER,
                         not_null_status INTEGER)
                     ''')
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    audit(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        attribute TEXT,
+                        value TEXT,
+                        scansystem_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id))
+                    '''
+                )
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 
@@ -111,6 +125,9 @@ class SQLiteHandling():
     def add_control(self, control_id, control_name, control_status):
         try:
             with self.connection:
+                current_scan = self.connection.execute(
+                    'SELECT max(id) FROM scansystem').fetchone()[0]
+                print('Current: ' + control_name)
                 self.connection.execute(
                     '''
                     INSERT OR REPLACE INTO
@@ -122,8 +139,7 @@ class SQLiteHandling():
                             'SELECT transport FROM control WHERE id = ?',
                             str(control_id)).fetchone()[0],
                         Status(control_status).name,
-                        self.connection.execute(
-                            'SELECT max(id) FROM scansystem').fetchone()[0],
+                        current_scan,
                         control_id
                     ))
         except sqlite3.Error as e:
@@ -166,7 +182,52 @@ class SQLiteHandling():
                                               duration, str(test_count),
                                               str(test_count_not_null),
                                               max_id))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
 
+    def add_audit(self):
+        try:
+            wmi_connection = get_transport('WMI')
+        except TransportConnectionError as e:
+            print('Warning: Can not connect to remote WMI-host')
+            return 0
+        query_result_sys = wmi_connection.wmi_query("Select Caption, \
+            OSArchitecture, Version from Win32_OperatingSystem")[0]
+        query_result_group = wmi_connection.wmi_query("Select Name, \
+            DNSHostName, Domain, Workgroup, PartOfDomain \
+            from Win32_ComputerSystem")[0]
+        Domain = query_result_group.Domain
+        Workgroup = query_result_group.Workgroup
+
+        if query_result_group.PartOfDomain == False:
+            Domain = None
+        else:
+            Workgroup = None
+
+        audit_info = {
+            'OSName': query_result_sys.Caption,
+            'OSArchitecture': query_result_sys.OSArchitecture,
+            'OSVersion': query_result_sys.Version,
+            'NetBiosName': query_result_group.Name,
+            'Hostname': query_result_group.DNSHostName,
+            'Domain': Domain,
+            'Workgroup': Workgroup,
+            'PartOfDomain': bool(query_result_group.PartOfDomain)
+        }
+
+        try:
+            with self.connection:
+                current_scan = self.connection.execute(
+                    'SELECT max(id) FROM scansystem').fetchone()[0]
+                for key in audit_info:
+                    self.connection.execute(
+                        'INSERT OR REPLACE INTO audit'
+                        '(attribute, value, scansystem_id) VALUES (?, ?, ?)',
+                        (
+                            key,
+                            audit_info[key],
+                            current_scan
+                        ))
         except sqlite3.Error as e:
             raise DatabaseError(e.args[0])
 

@@ -26,6 +26,18 @@ class BasicScanInfo(NamedTuple):
     tests_count: int
     not_null_status: int
     controls: list
+    wmi_sys_info: list
+
+
+class WMIScanInfo(NamedTuple):
+    OSname: str
+    OSArchitecture: str
+    OSVersion: str
+    NetBiosName: str
+    Hostname: str
+    Domain: str
+    Workgroup: str
+    PartOfDomain: str
 
 
 def get_rendered_html():
@@ -50,6 +62,23 @@ def get_rendered_html():
                 transport=scandata[2],
                 status=scandata[3]))
 
+        audit_query = dict(connection.execute(
+            'SELECT attribute, value FROM audit WHERE scansystem_id = ?',
+            (str(scan[0]))).fetchall())
+
+        if audit_query:
+            audit = WMIScanInfo(
+                OSname=audit_query['OSName'],
+                OSArchitecture=audit_query['OSArchitecture'],
+                OSVersion=audit_query['OSVersion'],
+                NetBiosName=audit_query['NetBiosName'],
+                Hostname=audit_query['Hostname'],
+                Domain=audit_query['Domain'],
+                Workgroup=audit_query['Workgroup'],
+                PartOfDomain=audit_query['PartOfDomain'])
+        else:
+            audit = None
+
         render_data.append(BasicScanInfo(
             scanid=scan[0],
             scandate=scan[1],
@@ -58,7 +87,8 @@ def get_rendered_html():
             duration=scan[4],
             tests_count=scan[5],
             not_null_status=scan[6],
-            controls=scan_controls))
+            controls=scan_controls,
+            wmi_sys_info=audit))
 
     connection.close()
 
