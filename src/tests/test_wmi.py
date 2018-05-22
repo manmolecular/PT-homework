@@ -18,7 +18,7 @@ def test_wmi_exec_wo_command():
 
 
 def test_valid_command_status():
-    assert (bool(WMIconnect.wmi_exec('ipconfig')['result']) == 0)
+    assert (bool(WMIconnect.wmi_exec('ipconfig')['result']) == False)
 
 
 def test_wmi_wo_query():
