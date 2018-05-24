@@ -91,11 +91,47 @@ class SQLiteHandling():
                         duration TEXT,
                         tests_count INTEGER,
                         not_null_status INTEGER)
-                    ''')
+                    '''
+                )
                 self.connection.execute(
                     '''
                     CREATE TABLE IF NOT EXISTS
                     audit(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        attribute TEXT,
+                        value TEXT,
+                        scansystem_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id))
+                    '''
+                )
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    snmp_sysDescr(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        value TEXT,
+                        scansystem_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id))
+                    '''
+                )
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    snmp_interfaces(
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        interface TEXT,
+                        status TEXT,
+                        scansystem_id INTEGER,
+
+                        FOREIGN KEY (scansystem_id) REFERENCES scansystem(id))
+                    '''
+                )
+                self.connection.execute(
+                    '''
+                    CREATE TABLE IF NOT EXISTS
+                    ssh_audit(
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         attribute TEXT,
                         value TEXT,
@@ -226,6 +262,41 @@ class SQLiteHandling():
                         (
                             key,
                             audit_info[key],
+                            current_scan
+                        ))
+        except sqlite3.Error as e:
+            raise DatabaseError(e.args[0])
+
+    def add_SNMP_SSH_info(self, SNMP_audit_info, SSH_audit_info):
+        try:
+            with self.connection:
+                current_scan = self.connection.execute(
+                    'SELECT max(id) FROM scansystem').fetchone()[0]
+                self.connection.execute(
+                    'INSERT OR REPLACE INTO snmp_sysDescr'
+                    '(value, scansystem_id) VALUES (?, ?)',
+                    (
+                        str(SNMP_audit_info['sysDescr']),
+                        current_scan
+                    ))
+                for interface in SNMP_audit_info['listOfInterfaces']:
+                    self.connection.execute(
+                        'INSERT OR REPLACE INTO snmp_interfaces'
+                        '(interface, status, scansystem_id)'
+                        'VALUES (?, ?, ?)',
+                        (
+                            interface[0],
+                            interface[1],
+                            current_scan
+                        ))
+                for key in SSH_audit_info:
+                    self.connection.execute(
+                        'INSERT OR REPLACE INTO ssh_audit'
+                        '(attribute, value, scansystem_id)'
+                        'VALUES (?, ?, ?)',
+                        (
+                            key,
+                            SSH_audit_info[key],
                             current_scan
                         ))
         except sqlite3.Error as e:
