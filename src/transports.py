@@ -54,12 +54,13 @@ class SNMPtransport():
         self.port = port
             
     def get_snmpdata(self, OID):
+        format_OID = '.' + OID + '.0'
         errorIndication, errorStatus, errorIndex, varBinds = next(
             getCmd(SnmpEngine(),
                 CommunityData('public', mpModel=0),
                 UdpTransportTarget((self.host, self.port)),
                 ContextData(),
-                ObjectType(ObjectIdentity('SNMPv2-MIB', OID, 0)))
+                ObjectType(ObjectIdentity(format_OID)))
         )
         if errorIndication:
             return errorIndication
