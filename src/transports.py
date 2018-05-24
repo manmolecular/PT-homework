@@ -208,7 +208,7 @@ class SSHtransport():
         if not command:
             raise TransportError({'command': command})
         stdin, stdout, stderr = self.client.exec_command(command)
-        return str(stdout.read().decode("utf-8"))
+        return str(stdout.read().decode("utf-8"))[:-1]
 
     def get_file(self, file_name=None):
         file_name = file_name or FILE_DEFAULT
