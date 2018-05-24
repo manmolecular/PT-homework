@@ -52,17 +52,18 @@ class SNMPtransport():
     def __init__(self, host=None, port=None, login=None, password=None):
         self.host = host
         self.port = port
-            
+                
     def get_snmpdata(self, OIDs):
         result = []
+        if type(OIDs) == str:
+            OIDs = [OIDs]
         for OID in OIDs:
-            format_OID = '.' + OID + '.0'
             errorIndication, errorStatus, errorIndex, varBinds = next(
                 getCmd(SnmpEngine(),
                     CommunityData('public', mpModel=0),
                     UdpTransportTarget((self.host, self.port)),
                     ContextData(),
-                    ObjectType(ObjectIdentity(format_OID)))
+                    ObjectType(ObjectIdentity(OID)))
             )
             if errorIndication:
                 return errorIndication
@@ -71,7 +72,7 @@ class SNMPtransport():
                 errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
             else:
                 for varBind in varBinds:
-                    result.append(' = '.join([x.prettyPrint() for x in varBind]))
+                    result.append(varBind[1])
         return result
 
 
