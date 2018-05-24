@@ -91,24 +91,33 @@ def get_rendered_html():
             audit = None
 
         """SNMP/SSH part"""
-        SNMP_sysDescr_query = str(connection.execute('SELECT value FROM snmp_sysDescr \
-            WHERE scansystem_id = ?', (str(scan[0]))).fetchall()[0][0])
-        SNMP_interfaces_query = connection.execute('SELECT \
-            interface, status FROM snmp_interfaces WHERE \
-            scansystem_id = ?', (str(scan[0]))).fetchall()
+        try:
+            SNMP_sysDescr_query = str(connection.execute('SELECT value FROM snmp_sysDescr \
+                WHERE scansystem_id = ?', (str(scan[0]))).fetchall()[0][0])
+        except IndexError:
+            SNMP_sysDescr_query = None
+        try:
+            SNMP_interfaces_query = connection.execute('SELECT \
+                interface, status FROM snmp_interfaces WHERE \
+                scansystem_id = ?', (str(scan[0]))).fetchall()
+        except Exception:
+            SNMP_interfaces_query = None
+
         SSH_base_query = connection.execute('SELECT \
             value FROM ssh_audit WHERE \
             scansystem_id = ?', (str(scan[0]))).fetchall()
-        
-        SNMP_audit_data = SNMPSSHScanInfo(
-            sysDescr=SNMP_sysDescr_query,
-            interfaces=SNMP_interfaces_query,
-            ssh_sys_info=SSH_base_query[0][0],
-            ssh_cpu_info=SSH_base_query[1][0].split('\n'),
-            ssh_kernel=SSH_base_query[2][0],
-            ssh_sys_users=SSH_base_query[3][0].split('\n'),
-            ssh_ip_macs=SSH_base_query[4][0].split('\n'),
-            ssh_packages=SSH_base_query[5][0].split('\n'))
+        if SSH_base_query:
+            SNMP_audit_data = SNMPSSHScanInfo(
+                sysDescr=SNMP_sysDescr_query,
+                interfaces=SNMP_interfaces_query,
+                ssh_sys_info=SSH_base_query[0][0],
+                ssh_cpu_info=SSH_base_query[1][0].split('\n'),
+                ssh_kernel=SSH_base_query[2][0],
+                ssh_sys_users=SSH_base_query[3][0].split('\n'),
+                ssh_ip_macs=SSH_base_query[4][0].split('\n'),
+                ssh_packages=SSH_base_query[5][0].split('\n'))
+        else:
+            SNMP_audit_data = None
 
         render_data.append(BasicScanInfo(
             scanid=scan[0],
@@ -134,6 +143,7 @@ def get_rendered_html():
 
 
 def make_report():
+    print('Create report...')
     whtml = HTML(string=get_rendered_html().encode('utf8'))
     wcss = CSS(filename='./templates/style.css')
     whtml.write_pdf('Report.pdf', stylesheets=[wcss])
