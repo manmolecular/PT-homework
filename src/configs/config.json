@@ -4,7 +4,7 @@
         "SSH": {
             "password": "pwd",
             "login": "root",
-            "port": 22022
+            "port": 22023
         },
         "SQL": {
             "password": "rootpass",
