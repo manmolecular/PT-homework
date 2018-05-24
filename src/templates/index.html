@@ -31,22 +31,49 @@
         System info
     </h2>
     {% if sys.wmi_sys_info != None %}
-    OS name: {{ sys.wmi_sys_info.OSname }} <br>
-    OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
-    OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
-    Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
-    Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
+        OS name: {{ sys.wmi_sys_info.OSname }} <br>
+        OS Architecture: {{ sys.wmi_sys_info.OSArchitecture }} <br>
+        OS Version: {{ sys.wmi_sys_info.OSVersion }} <br>
+        Net BIOS Name: {{ sys.wmi_sys_info.NetBiosName }} <br>
+        Hostname: {{ sys.wmi_sys_info.Hostname }} <br>
     {% if sys.wmi_sys_info.Domain != None %}
-    Domain: {{ sys.wmi_sys_info.Domain }} <br>
+        Domain: {{ sys.wmi_sys_info.Domain }} <br>
     {% endif %}
     {% if sys.wmi_sys_info.Workgroup != None %}
-    Workgroup: {{ sys.wmi_sys_info.Workgroup }} <br>
+        Workgroup: {{ sys.wmi_sys_info.Workgroup }} <br>
     {% endif %}
-    Part Of Domain: {{ sys.wmi_sys_info.PartOfDomain }} <br>
+        Part Of Domain: {{ sys.wmi_sys_info.PartOfDomain }} <br>
     {% endif %}
     {% if sys.wmi_sys_info == None %}
-    WMI service is not available
+        WMI service is not available
     {% endif %}
+    <h2 class="main-title">
+        SNMP/SSH info
+    </h2>
+    <h3>System description:</h3> {{ sys.snmp_ssh.sysDescr }}
+    <h3>Interfaces:</h3>
+    {% for interface in sys.snmp_ssh.interfaces %} 
+        Interface: {{ interface[0] }} with status {{ interface[1] }} <br>
+    {% endfor %}
+    <h3>SSH system info:</h3> {{ sys.snmp_ssh.ssh_sys_info }}
+    <h3>SSH CPU info:</h3>
+    {% for cpu in sys.snmp_ssh.ssh_cpu_info %}
+        {{ cpu }} <br>
+    {% endfor %}
+    <h3>SSH kernel info:</h3> {{ sys.snmp_ssh.ssh_kernel }}
+    <h3>SSH system users:</h3>
+    {% for user in sys.snmp_ssh.ssh_sys_users %}
+        user: {{ user }} <br>
+    {% endfor %}
+    <h3>SSH MACs:</h3>
+    {% for mac in sys.snmp_ssh.ssh_ip_macs %}
+        {{ mac }} <br>
+    {% endfor %}
+    <h3>SSH installed packages:</h3>
+    {% for app in sys.snmp_ssh.ssh_packages %}
+        apt: {{ app }} <br>
+    {% endfor %}
+
     <article class="A4">
         <h2>
             Passed controls
