@@ -1,15 +1,11 @@
 # My files
-src/tests/getme
 src/tests/testfile
 src/tests/database.db
 src/testfile
-src/getme
 src/database.db
 src/sample_report.pdf
-src/ntest.py
-src/delete.sh
 src/.idea/
-src/wmitest.py
+src/snmp.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
