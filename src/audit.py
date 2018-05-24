@@ -6,8 +6,6 @@ def SNMP_audit():
     connection = get_transport('SNMP')
     try:
         sysDescr = connection.get_snmpdata('.1.3.6.1.2.1.1.1.0')
-        if isinstance(sysDescr, pysnmp.proto.errind.RequestTimedOut):
-            print('oh hi')
         interfacesQuantity = connection.get_snmpdata('.1.3.6.1.2.1.2.1.0')[0]
         listOfInterfaces = []
         for interface in range(1, interfacesQuantity):
