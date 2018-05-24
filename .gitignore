@@ -5,6 +5,7 @@ src/testfile
 src/database.db
 src/sample_report.pdf
 src/.idea/
+src/check.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
