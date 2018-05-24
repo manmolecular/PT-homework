@@ -1,4 +1,5 @@
-from transports import get_transport, SNMPtransport, TransportError
+#!/usr/bin/env python3
+from transports import get_transport, TransportError
 import re
 
 
