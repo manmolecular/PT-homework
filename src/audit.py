@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from transports import get_transport, TransportError
-import re
 
 
 def SNMP_audit():
@@ -11,8 +10,8 @@ def SNMP_audit():
         listOfInterfaces = []
         for interface in range(1, interfacesQuantity):
             listOfInterfaces.append([
-                ((connection.get_snmpdata('.1.3.6.1.2.1.2.2.1.2.'+ str(interface))[0]).prettyPrint()),
-                (connection.get_snmpdata('.1.3.6.1.2.1.2.2.1.7.'+ str(interface))[0].prettyPrint())
+                ((connection.get_snmpdata('.1.3.6.1.2.1.2.2.1.2.' + str(interface))[0]).prettyPrint()),
+                (connection.get_snmpdata('.1.3.6.1.2.1.2.2.1.7.' + str(interface))[0].prettyPrint())
             ])
     except Exception:
         return None

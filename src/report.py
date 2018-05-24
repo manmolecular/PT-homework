@@ -40,6 +40,7 @@ class WMIScanInfo(NamedTuple):
     Workgroup: str
     PartOfDomain: str
 
+
 class SNMPSSHScanInfo(NamedTuple):
     sysDescr: str
     interfaces: list

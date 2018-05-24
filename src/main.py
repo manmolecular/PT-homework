@@ -4,10 +4,9 @@ import importlib
 from datetime import datetime
 from pathlib import Path
 
+from audit import retrieve_audit_info
 from db_handling import SQLiteHandling
 from report import make_report
-
-from audit import retrieve_audit_info
 
 SCRIPT_DIR = 'scripts'
 local_db = SQLiteHandling()

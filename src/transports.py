@@ -5,10 +5,10 @@ import socket
 
 import paramiko
 import pymysql.cursors
-#from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, \
-#UdpTransportTarget, ContextData, ObjectType, ObjectIdentity
-from pysnmp.hlapi import *
 import wmi
+# from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, \
+# UdpTransportTarget, ContextData, ObjectType, ObjectIdentity
+from pysnmp.hlapi import *
 
 from get_config import get_config
 
@@ -52,7 +52,7 @@ class SNMPtransport():
     def __init__(self, host=None, port=None, login=None, password=None):
         self.host = host
         self.port = port
-                
+
     def get_snmpdata(self, OIDs):
         result = []
         if type(OIDs) == str:
@@ -60,16 +60,16 @@ class SNMPtransport():
         for OID in OIDs:
             errorIndication, errorStatus, errorIndex, varBinds = next(
                 getCmd(SnmpEngine(),
-                    CommunityData('public', mpModel=0),
-                    UdpTransportTarget((self.host, self.port)),
-                    ContextData(),
-                    ObjectType(ObjectIdentity(OID)))
+                       CommunityData('public', mpModel=0),
+                       UdpTransportTarget((self.host, self.port)),
+                       ContextData(),
+                       ObjectType(ObjectIdentity(OID)))
             )
             if errorIndication:
                 return errorIndication
             elif errorStatus:
                 return ('%s at %s' % (errorStatus.prettyPrint(),
-                errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+                                      errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
             else:
                 for varBind in varBinds:
                     result.append(varBind[1])
