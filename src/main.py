@@ -7,6 +7,8 @@ from pathlib import Path
 from db_handling import SQLiteHandling
 from report import make_report
 
+from audit import retrieve_audit_info
+
 SCRIPT_DIR = 'scripts'
 local_db = SQLiteHandling()
 
@@ -31,6 +33,9 @@ def main():
     local_db.initial_scan()
     local_db.add_audit()
     import_scripts()
+
+    network_analysis = retrieve_audit_info()
+    local_db.add_SNMP_SSH_info(network_analysis[0], network_analysis[1])
 
     end_time = datetime.now()
     duration = end_time - start_time
