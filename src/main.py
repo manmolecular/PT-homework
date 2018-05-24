@@ -35,7 +35,10 @@ def main():
     import_scripts()
 
     network_analysis = retrieve_audit_info()
-    local_db.add_SNMP_SSH_info(network_analysis[0], network_analysis[1])
+    if network_analysis != None:
+        local_db.add_SNMP_SSH_info(network_analysis[0], network_analysis[1])
+    else:
+        print('Warning: SNMP and SSH services is unavailable')
 
     end_time = datetime.now()
     duration = end_time - start_time
