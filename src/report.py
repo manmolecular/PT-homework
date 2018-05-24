@@ -146,4 +146,4 @@ def make_report():
     print('Create report...')
     whtml = HTML(string=get_rendered_html().encode('utf8'))
     wcss = CSS(filename='./templates/style.css')
-    whtml.write_pdf('Report.pdf', stylesheets=[wcss])
+    whtml.write_pdf('system_report.pdf', stylesheets=[wcss])
