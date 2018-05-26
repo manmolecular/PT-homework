@@ -119,14 +119,14 @@ class WMIregistryTransport(WMItransport):
 
 
 class MySQLtransport():
-    def __init__(self, host, port, login, password):
+    def __init__(self, host, port, login, password, database):
         try:
             self.connection = pymysql.connect(
                 host=host,
                 user=login,
                 port=port,
                 password=password,
-                db='def_database',
+                db=database,
                 charset='utf8',
                 cursorclass=pymysql.cursors.DictCursor,
                 unix_socket=False)
