@@ -38,8 +38,8 @@ def third():
 
 def get_sql_info():
     sql_info = {
-    'dir_mod'    : first(),
-    'users_pswds': second(),
-    'priv'       : third()
+    'CheckDirectoryChmod'    : first(),
+    'CheckLoginPasswordEquality': second(),
+    'CheckAdminAccesToTable'       : third()
     }
     return sql_info

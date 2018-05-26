@@ -4,12 +4,14 @@ from weasyprint import HTML, CSS
 from ssh_info import get_ssh_info
 from sql_info import get_sql_info
 from wmi_info import get_wmi_info
+from cisco_info import get_cisco_info
 
 def get_rendered_html():
     render_data = {
         'ssh_audit': get_ssh_info(),
         'sql_audit': get_sql_info(),
-        'wmi_audit': get_wmi_info()
+        'wmi_audit': get_wmi_info(),
+        'cisco_audit': get_cisco_info()
     }
 
     env = Environment(

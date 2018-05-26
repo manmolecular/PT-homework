@@ -1,10 +1,18 @@
 from transports import SSHtransport
 
+ssh_ubuntu = SSHtransport('172.16.22.32', 22, 'scan_user', 'P@ssw0rd')
+ssh_centos = SSHtransport('172.16.22.33', 22, 'scan_user', 'P@ssw0rd')
+
+def ubuntu_aslr_check():
+    if ssh_ubuntu.exec('sysctl kernel.randomize_va_space')[0] == 'kernel.randomize_va_space = 2':
+        return [True, '']
+    else:
+        return [False, '']
+
 def get_ssh_info():
-    ssh_ubuntu = SSHtransport('172.16.22.32', 22, 'scan_user', 'P@ssw0rd')
-    ssh_centos = SSHtransport('172.16.22.33', 22, 'scan_user', 'P@ssw0rd')
     ubuntu_info = {
         'ASLR': ssh_ubuntu.exec('sysctl kernel.randomize_va_space'),
+        'IsASLRValid': ubuntu_aslr_check(),
         'SusPackages': [ssh_ubuntu.exec('sysctl net.ipv4.conf.all.log_martians'), 
                             ssh_ubuntu.exec('sysctl net.ipv4.conf.default.log_martians')],
         'LoginGraceTime': ssh_ubuntu.exec('grep "^LoginGraceTime" /etc/ssh/sshd_config'),

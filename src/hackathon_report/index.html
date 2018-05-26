@@ -21,6 +21,14 @@
             {% endfor %}
         {% endif %}
 
+        {% if audit == 'cisco_audit' %}
+            {% for control in scan_data[audit] %}
+                Check: {{ control }} <br>
+                Value: {{ scan_data[audit][control] }}
+                <br><br>
+            {% endfor %}
+        {% endif %}
+
         {% if audit == 'wmi_audit' %}
             {% for system in scan_data[audit] %}
                 <h3 class="main-title">
