@@ -88,7 +88,7 @@ def get_cisco_info():
     'AccessRulesFor_1_Stand': check_ssh_version_1(),
     'AccessRulesFor_2_Stand': check_ssh_version_2(),
     'AccessRulesFor_3_Stand': 'We were out of time',
-    'AccessRulesFor_3_Stand': 'We were out of time',
+    'AccessRulesFor_4_Stand': 'We were out of time',
     'CheckSSHTimeOutFor_1_Stand': check_ssh_timeout_1(),
     'CheckSSHTimeOutFor_2_Stand': check_ssh_timeout_2(),
     'CheckSSHTimeOutFor_3_Stand': 'We were out of time',

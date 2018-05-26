@@ -9,6 +9,12 @@ def ubuntu_aslr_check():
     else:
         return [False, '']
 
+def centos_aslr_check():
+    if ssh_centos.exec('/sbin/sysctl kernel.randomize_va_space')[0] == 'kernel.randomize_va_space = 2':
+        return [True, '']
+    else:
+        return [False, '']
+
 def get_ssh_info():
     ubuntu_info = {
         'ASLR': ssh_ubuntu.exec('sysctl kernel.randomize_va_space'),
@@ -21,6 +27,7 @@ def get_ssh_info():
 
     centos_info = {
         'ASLR': ssh_centos.exec('/sbin/sysctl kernel.randomize_va_space'),
+        'IsASLRValid': centos_aslr_check(),
         'SusPackages': [ssh_centos.exec('/sbin/sysctl net.ipv4.conf.all.log_martians'),
                             ssh_centos.exec('/sbin/sysctl net.ipv4.conf.default.log_martians')],
         'LoginGraceTime': ssh_centos.exec('grep "^LoginGraceTime" /etc/ssh/sshd_config'),
