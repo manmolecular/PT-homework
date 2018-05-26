@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hackathon report</title>
+</head>
+<body>
+    <article class="A4">
+    <h1 class="main-title">
+        Scanning Summary
+    </h1>
+    {% for audit in scan_data %}
+    <h2 class="main-title">
+        Type: {{ audit }}
+    </h2>
+       {% for system in scan_data[audit] %}
+        <h3 class="main-title">
+            System: {{ system }}
+        </h3>
+            {% for check in scan_data[audit][system] %}
+                Check: {{ check }} with value {{ scan_data[audit][system][check][0] }} <br>
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>

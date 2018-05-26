@@ -4,7 +4,9 @@ from weasyprint import HTML, CSS
 from ssh_info import get_ssh_info
 
 def get_rendered_html():
-    render_data = get_ssh_info()
+    render_data = {
+        'ssh_audit': get_ssh_info()
+    }
 
     env = Environment(
         loader=FileSystemLoader('hackathon_report'),
