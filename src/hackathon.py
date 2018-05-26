@@ -6,6 +6,7 @@ from ssh_info import get_ssh_info
 def get_rendered_html():
     render_data = {
         'ssh_audit': get_ssh_info()
+        'sql_audit': get_sql_info()
     }
 
     env = Environment(
