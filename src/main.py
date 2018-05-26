@@ -31,7 +31,7 @@ def main():
     local_db.create_db()
     local_db.initial_scan()
     local_db.add_audit()
-    import_scripts()
+    #import_scripts()
 
     network_analysis = retrieve_audit_info()
     if network_analysis != None:
