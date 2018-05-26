@@ -13,14 +13,45 @@
     <h2 class="main-title">
         Type: {{ audit }}
     </h2>
-       {% for system in scan_data[audit] %}
-        <h3 class="main-title">
-            System: {{ system }}
-        </h3>
-            {% for check in scan_data[audit][system] %}
-                Check: {{ check }} with value {{ scan_data[audit][system][check][0] }} <br>
+        {% if audit == 'sql_audit' %}
+            {% for control in scan_data[audit] %}
+                Check: {{ control }} <br>
+                Value: {{ scan_data[audit][control] }}
+                <br><br>
             {% endfor %}
-        {% endfor %}
+        {% endif %}
+
+        {% if audit == 'wmi_audit' %}
+            {% for system in scan_data[audit] %}
+                <h3 class="main-title">
+                    System: {{ system }}
+                </h3>
+                {% for check in scan_data[audit][system] %}
+                    Check: {{ check }} <br>
+                    Value: {{ scan_data[audit][system][check] }} <br><br>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
+        {% if audit == 'ssh_audit' %}
+           {% for system in scan_data[audit] %}
+            <h3 class="main-title">
+                System: {{ system }}
+            </h3>
+                {% for check in scan_data[audit][system] %}
+                    Check: {{ check }} <br>
+                    {% if check != 'SusPackages'%}
+                        Value: {{ scan_data[audit][system][check][0] }} 
+                    {% else %} 
+                        Values:<br>
+                        {{ scan_data[audit][system][check][0][0] }} <br>
+                        {{ scan_data[audit][system][check][1][0] }} 
+                    {% endif %}
+                    <br><br>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+
     {% endfor %}
 </body>
 </html>
