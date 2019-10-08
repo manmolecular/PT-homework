@@ -22,3 +22,9 @@ services:
     build: img-ubuntu-sshd
     ports:
       - '22022:22'
+
+  snmp:
+    build: debian-ssh-snmp
+    ports:
+      - '22023:22'
+      - '161:161/udp'

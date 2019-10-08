@@ -6,6 +6,9 @@ import socket
 import paramiko
 import pymysql.cursors
 import wmi
+# from pysnmp.hlapi import getCmd, SnmpEngine, CommunityData, \
+# UdpTransportTarget, ContextData, ObjectType, ObjectIdentity
+from pysnmp.hlapi import *
 
 from get_config import get_config
 
@@ -28,12 +31,11 @@ class TransportError(Exception):
 
 class TransportUnknown(Exception):
     def __init__(self, error_args):
-        def __init__(self, error_args):
-            super().__init__(self)
-            self.error_args = error_args
+        super().__init__(self)
+        self.error_args = error_args
 
-        def __str__(self):
-            return str(self.error_args)
+    def __str__(self):
+        return str(self.error_args)
 
 
 class TransportConnectionError(TransportError):
@@ -44,6 +46,34 @@ class TransportConnectionError(TransportError):
 class TransportIOError(TransportError):
     def __init__(self, error_args):
         super().__init__(error_args)
+
+
+class SNMPtransport():
+    def __init__(self, host=None, port=None, login=None, password=None):
+        self.host = host
+        self.port = port
+
+    def get_snmpdata(self, OIDs):
+        result = []
+        if type(OIDs) == str:
+            OIDs = [OIDs]
+        for OID in OIDs:
+            errorIndication, errorStatus, errorIndex, varBinds = next(
+                getCmd(SnmpEngine(),
+                       CommunityData('public', mpModel=0),
+                       UdpTransportTarget((self.host, self.port)),
+                       ContextData(),
+                       ObjectType(ObjectIdentity(OID)))
+            )
+            if errorIndication:
+                return errorIndication
+            elif errorStatus:
+                return ('%s at %s' % (errorStatus.prettyPrint(),
+                                      errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+            else:
+                for varBind in varBinds:
+                    result.append(varBind[1])
+        return result
 
 
 class WMItransport():
@@ -178,7 +208,7 @@ class SSHtransport():
         if not command:
             raise TransportError({'command': command})
         stdin, stdout, stderr = self.client.exec_command(command)
-        return stdout.read()
+        return str(stdout.read().decode("utf-8"))[:-1]
 
     def get_file(self, file_name=None):
         file_name = file_name or FILE_DEFAULT
@@ -203,7 +233,8 @@ global_transport_names = {
     'SSH': SSHtransport,
     'SQL': MySQLtransport,
     'WMI': WMItransport,
-    'WMIreg': WMIregistryTransport
+    'WMIreg': WMIregistryTransport,
+    'SNMP': SNMPtransport
 }
 
 

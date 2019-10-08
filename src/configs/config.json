@@ -2,9 +2,9 @@
     "host": "192.168.99.100",
     "transports": {
         "SSH": {
-          "password": "pwd",
-          "login": "root",
-          "port": 22022
+            "password": "pwd",
+            "login": "root",
+            "port": 22023
         },
         "SQL": {
             "password": "rootpass",
@@ -20,6 +20,11 @@
             "password": "password",
             "login": "administrator",
             "port":""
+        },
+        "SNMP": {
+            "password": "",
+            "login": "", 
+            "port": 161
         }
     }
 }

@@ -4,6 +4,7 @@ import importlib
 from datetime import datetime
 from pathlib import Path
 
+from audit import retrieve_audit_info
 from db_handling import SQLiteHandling
 from report import make_report
 
@@ -31,6 +32,12 @@ def main():
     local_db.initial_scan()
     local_db.add_audit()
     import_scripts()
+
+    network_analysis = retrieve_audit_info()
+    if network_analysis != None:
+        local_db.add_SNMP_SSH_info(network_analysis[0], network_analysis[1])
+    else:
+        print('Warning: SNMP and SSH services is unavailable')
 
     end_time = datetime.now()
     duration = end_time - start_time

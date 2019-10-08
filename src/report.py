@@ -27,6 +27,7 @@ class BasicScanInfo(NamedTuple):
     not_null_status: int
     controls: list
     wmi_sys_info: list
+    snmp_ssh: list
 
 
 class WMIScanInfo(NamedTuple):
@@ -38,6 +39,17 @@ class WMIScanInfo(NamedTuple):
     Domain: str
     Workgroup: str
     PartOfDomain: str
+
+
+class SNMPSSHScanInfo(NamedTuple):
+    sysDescr: str
+    interfaces: list
+    ssh_sys_info: str
+    ssh_cpu_info: list
+    ssh_kernel: str
+    ssh_sys_users: list
+    ssh_ip_macs: list
+    ssh_packages: list
 
 
 def get_rendered_html():
@@ -79,6 +91,35 @@ def get_rendered_html():
         else:
             audit = None
 
+        """SNMP/SSH part"""
+        try:
+            SNMP_sysDescr_query = str(connection.execute('SELECT value FROM snmp_sysDescr \
+                WHERE scansystem_id = ?', (str(scan[0]))).fetchall()[0][0])
+        except IndexError:
+            SNMP_sysDescr_query = None
+        try:
+            SNMP_interfaces_query = connection.execute('SELECT \
+                interface, status FROM snmp_interfaces WHERE \
+                scansystem_id = ?', (str(scan[0]))).fetchall()
+        except Exception:
+            SNMP_interfaces_query = None
+
+        SSH_base_query = connection.execute('SELECT \
+            value FROM ssh_audit WHERE \
+            scansystem_id = ?', (str(scan[0]))).fetchall()
+        if SSH_base_query:
+            SNMP_audit_data = SNMPSSHScanInfo(
+                sysDescr=SNMP_sysDescr_query,
+                interfaces=SNMP_interfaces_query,
+                ssh_sys_info=SSH_base_query[0][0],
+                ssh_cpu_info=SSH_base_query[1][0].split('\n'),
+                ssh_kernel=SSH_base_query[2][0],
+                ssh_sys_users=SSH_base_query[3][0].split('\n'),
+                ssh_ip_macs=SSH_base_query[4][0].split('\n'),
+                ssh_packages=SSH_base_query[5][0].split('\n'))
+        else:
+            SNMP_audit_data = None
+
         render_data.append(BasicScanInfo(
             scanid=scan[0],
             scandate=scan[1],
@@ -88,7 +129,8 @@ def get_rendered_html():
             tests_count=scan[5],
             not_null_status=scan[6],
             controls=scan_controls,
-            wmi_sys_info=audit))
+            wmi_sys_info=audit,
+            snmp_ssh=SNMP_audit_data))
 
     connection.close()
 
@@ -102,6 +144,7 @@ def get_rendered_html():
 
 
 def make_report():
+    print('Create report...')
     whtml = HTML(string=get_rendered_html().encode('utf8'))
     wcss = CSS(filename='./templates/style.css')
-    whtml.write_pdf('sample_report.pdf', stylesheets=[wcss])
+    whtml.write_pdf('system_report.pdf', stylesheets=[wcss])
