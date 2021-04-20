@@ -31,7 +31,7 @@ pluggy==0.6.0
 ply==3.11
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
-py==1.5.3
+py==1.10.0
 pyasn1==0.4.2
 pycparser==2.18
 pycryptodomex==3.6.1
